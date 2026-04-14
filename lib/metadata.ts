@@ -1,27 +1,28 @@
 import type { Metadata } from "next";
 
 export const siteConfig = {
-  name: "React Bits Pro - Finance Template",
+  name: "Brixo Labs",
   description:
-    "The modern financial platform that grows with you. From personal accounts to enterprise solutions, manage your money with confidence.",
-  url: "https://finaro.com",
+    "Brixo Labs designs, builds, and manages AI agents that hit the numbers you care about. From use case to production, with measurement at every stage.",
+  url: "https://brixolabs.com",
   ogImage: "/og-image.png",
-  creator: "@finaro",
+  creator: "@brixolabs",
+  bookingUrl: "https://zcal.co/i/k4jSoY55",
   authors: [
     {
-      name: "Finaro",
-      url: "https://finaro.com",
+      name: "Brixo Labs",
+      url: "https://brixolabs.com",
     },
   ],
   keywords: [
-    "banking",
-    "finance",
-    "fintech",
-    "payments",
-    "business banking",
-    "money transfer",
-    "financial platform",
-    "modern banking",
+    "AI agents",
+    "agent development",
+    "AI consulting",
+    "agent deployment",
+    "AI operations",
+    "autonomous agents",
+    "LLM applications",
+    "AI strategy",
   ],
 } as const;
 
