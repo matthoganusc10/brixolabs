@@ -24,19 +24,18 @@ function Funnel(): ReactNode {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.5, delay: i * 0.1, ease }}
-            className="flex items-center gap-4"
+            className="grid grid-cols-[7rem_1fr_2.5rem] items-center gap-4"
           >
-            <div className="flex-1 relative h-10 flex items-center">
-              <div
-                className="h-full border border-background/20 bg-background/5 rounded-sm flex items-center px-4"
-                style={{ width: `${stage.width}%` }}
-              >
-                <span className="text-xs font-mono uppercase tracking-wider text-background/90 whitespace-nowrap">
-                  {stage.label}
-                </span>
-              </div>
+            <div className="text-xs font-mono uppercase tracking-wider text-background/90 whitespace-nowrap">
+              {stage.label}
             </div>
-            <div className="text-xs font-mono text-background/40 w-10 text-right tabular-nums">
+            <div className="relative h-10">
+              <div
+                className="h-full border border-background/20 bg-background/5 rounded-sm"
+                style={{ width: `${stage.width}%` }}
+              />
+            </div>
+            <div className="text-xs font-mono text-background/40 text-right tabular-nums">
               {stage.width}%
             </div>
           </motion.div>

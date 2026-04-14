@@ -16,7 +16,7 @@ function LoopDiagram(): ReactNode {
   return (
     <div className="w-full max-w-md mx-auto">
       <svg
-        viewBox="0 0 300 300"
+        viewBox="-15 -15 330 330"
         className="w-full h-auto"
         role="img"
         aria-label="Deploy, monitor, improve, feedback — continuous loop"
@@ -104,7 +104,7 @@ function LoopDiagram(): ReactNode {
             <circle
               cx={node.x}
               cy={node.y}
-              r="22"
+              r="34"
               className="fill-background stroke-foreground"
               strokeWidth="1.5"
             />
@@ -112,7 +112,7 @@ function LoopDiagram(): ReactNode {
               x={node.x}
               y={node.y + 4}
               textAnchor="middle"
-              className="fill-foreground text-[10px] font-medium"
+              className="fill-foreground text-[11px] font-medium"
             >
               {node.label}
             </text>
