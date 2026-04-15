@@ -6,7 +6,6 @@ import { FinalCTA } from "@/components/final-cta";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
 import { Principles } from "@/components/principles";
-import { Stats } from "@/components/stats";
 import { WhatWeDo } from "@/components/what-we-do";
 import { createMetadata, siteConfig } from "@/lib/metadata";
 import type { Metadata } from "next";
@@ -28,7 +27,6 @@ export default function HomePage(): ReactNode {
         <FeatureCards />
         <Differentiator />
         <Principles />
-        <Stats />
         <AgentsGrid />
         <FinalCTA />
       </main>

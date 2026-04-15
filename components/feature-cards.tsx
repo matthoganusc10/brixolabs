@@ -1,31 +1,35 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { Search, Ruler, Wrench, Rocket } from "lucide-react";
+import { Ruler, Rocket, BarChart3, Activity } from "lucide-react";
 import { motion } from "motion/react";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-const steps = [
-  {
-    icon: Search,
-    title: "Discover",
-    body: "We audit your operations to find the agent use cases worth building.",
-  },
+const stages = [
   {
     icon: Ruler,
     title: "Design",
-    body: "We define what success looks like, build a plan, and estimate costs before writing code.",
-  },
-  {
-    icon: Wrench,
-    title: "Build & Test",
-    body: "We build the agent, select the right models, and test against your success criteria.",
+    items: [
+      "Prioritizing Use Cases",
+      "Mapping Workflows (& Systems)",
+      "Success Criteria",
+    ],
   },
   {
     icon: Rocket,
-    title: "Deploy & Manage",
-    body: "Every agent launches with safety checks and a dedicated Agent Manager tracking performance week over week.",
+    title: "Deployment",
+    items: ["Model Selection", "Frameworks", "Guardrails & Testing"],
+  },
+  {
+    icon: BarChart3,
+    title: "Agent Analytics",
+    items: ["Experience Analytics", "Intent Analysis"],
+  },
+  {
+    icon: Activity,
+    title: "Agent Management",
+    items: ["Recursive Learning", "Maximizing Accountability"],
   },
 ];
 
@@ -58,11 +62,11 @@ export function FeatureCards(): ReactNode {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border relative">
-          {steps.map((step, i) => {
-            const Icon = step.icon;
+          {stages.map((stage, i) => {
+            const Icon = stage.icon;
             return (
               <motion.div
-                key={step.title}
+                key={stage.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
@@ -79,12 +83,23 @@ export function FeatureCards(): ReactNode {
                     0{i + 1}
                   </span>
                 </div>
-                <h3 className="text-xl font-medium font-serif text-foreground mb-3">
-                  {step.title}
+                <h3 className="text-xl font-medium font-serif text-foreground mb-5">
+                  {stage.title}
                 </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {step.body}
-                </p>
+                <ul className="space-y-3">
+                  {stage.items.map((item) => (
+                    <li
+                      key={item}
+                      className="flex gap-3 text-sm text-muted-foreground leading-relaxed"
+                    >
+                      <span
+                        className="mt-[9px] w-1 h-1 rounded-full bg-foreground/40 shrink-0"
+                        aria-hidden="true"
+                      />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </motion.div>
             );
           })}

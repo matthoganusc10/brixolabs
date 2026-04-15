@@ -79,7 +79,8 @@ export function FeatureHighlight(): ReactNode {
               transition={{ duration: 0.6, ease }}
               className="text-3xl sm:text-4xl lg:text-5xl font-medium font-serif leading-tight text-background"
             >
-              The agent adoption gap.
+              The Agent{" "}
+              <span className="italic text-background/60">Launch</span> Gap.
             </motion.h2>
 
             <motion.p
@@ -91,7 +92,7 @@ export function FeatureHighlight(): ReactNode {
             >
               Teams stall at every stage: wrong use case, missing data, no
               success metrics, no system to improve after deployment. The result
-              is pilots that never reach production, or agents running with no
+              is agents that never reach production, or agents running with no
               accountability.
             </motion.p>
 
