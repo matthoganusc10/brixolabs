@@ -11,7 +11,13 @@ const ease = [0.16, 1, 0.3, 1] as const;
 export function Hero(): ReactNode {
   return (
     <section className="relative min-h-dvh w-full overflow-hidden bg-background flex items-center">
-      <DitherCursor color="#0a0a0a" ditherSize={2} radius={0.1} intensity={0.5} />
+      <DitherCursor
+        color="#0a0a0a"
+        ditherSize={2}
+        radius={0.05}
+        decay={0.04}
+        intensity={0.5}
+      />
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute left-1/2 -translate-x-1/2 top-0 w-full max-w-270 h-full">
           <div className="absolute left-0 top-0 bottom-0 w-px bg-foreground/5" />
