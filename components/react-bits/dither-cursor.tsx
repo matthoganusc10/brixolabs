@@ -196,13 +196,13 @@ const DitherMaterial = shaderMaterial(
 
       float threshold = bayer8(gl_FragCoord.xy / uDitherSize);
 
-      float mask = step(threshold, signal);
+      float alphaMsk = step(threshold, signal);
 
-      if (signal < 0.01) mask = 0.0;
+      if (signal < 0.01) alphaMsk = 0.0;
 
       vec3 finalColor = uColor;
 
-      gl_FragColor = vec4(finalColor, mask);
+      gl_FragColor = vec4(finalColor, alphaMsk);
     }
   `,
 );
