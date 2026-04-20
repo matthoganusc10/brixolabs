@@ -5,7 +5,7 @@ export const siteConfig = {
   description:
     "Brixo audits your team's AI usage, finds the overspend, and shows you exactly what to cut. 30 to 40 percent of AI spend is waste — we find it.",
   url: "https://brixolabs.com",
-  ogImage: "/og-image.png",
+  ogImage: "/brixolabs.svg",
   creator: "@brixolabs",
   bookingUrl: "https://zcal.co/i/k4jSoY55",
   // Seeded trust-strip figures, surfaced as a count-up ticker in the hero.
@@ -79,11 +79,6 @@ export const baseMetadata: Metadata = {
     description: siteConfig.description,
     images: [siteConfig.ogImage],
     creator: siteConfig.creator,
-  },
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-icon.png",
   },
   manifest: "/site.webmanifest",
 };
