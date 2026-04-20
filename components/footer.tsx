@@ -27,7 +27,19 @@ export function Footer(): ReactNode {
               priority={false}
             />
             <p className="text-sm text-muted-foreground max-w-xs">
-              AI agents, built to hit the numbers you care about.
+              Ship agents that deliver ROI without the headaches.
+            </p>
+            <p className="text-sm text-muted-foreground max-w-xs">
+              Brought to you from the team behind{" "}
+              <a
+                href="https://www.brixo.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground underline underline-offset-2 hover:text-foreground/70 transition-colors"
+              >
+                Brixo
+              </a>
+              .
             </p>
           </div>
           <nav

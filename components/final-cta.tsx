@@ -18,7 +18,7 @@ export function FinalCTA(): ReactNode {
           transition={{ duration: 0.6, ease }}
           className="text-4xl sm:text-5xl md:text-6xl font-medium font-serif leading-tight max-w-3xl mx-auto"
         >
-          Ready to build an agent that hits the numbers?
+          Ready to talk about your agentic goals?
         </motion.h2>
 
         <motion.div
