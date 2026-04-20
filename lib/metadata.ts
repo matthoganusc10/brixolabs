@@ -5,7 +5,7 @@ export const siteConfig = {
   description:
     "Brixo audits your team's AI usage, finds the overspend, and shows you exactly what to cut. 30 to 40 percent of AI spend is waste — we find it.",
   url: "https://brixolabs.com",
-  ogImage: "/brixolabs.svg",
+  ogImage: "/og-image.png",
   creator: "@brixolabs",
   bookingUrl: "https://zcal.co/i/k4jSoY55",
   // Seeded trust-strip figures, surfaced as a count-up ticker in the hero.
