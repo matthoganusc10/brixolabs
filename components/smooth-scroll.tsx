@@ -2,7 +2,6 @@
 
 import { useEffect, type ReactNode } from "react";
 import Lenis from "lenis";
-import { features } from "@/lib/config";
 
 /**
  * Lenis configuration options.
@@ -20,8 +19,6 @@ const LENIS_OPTIONS = {
 
 export function SmoothScroll({ children }: { children: ReactNode }): ReactNode {
   useEffect(() => {
-    if (!features.smoothScroll) return;
-
     // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
