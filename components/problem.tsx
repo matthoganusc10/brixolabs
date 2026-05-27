@@ -77,10 +77,9 @@ export function Problem(): ReactNode {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2, ease }}
-          className="mt-16 text-xl sm:text-2xl font-medium font-serif text-background leading-snug max-w-3xl"
+          className="mt-20 border-t border-background/15 pt-12 text-3xl sm:text-4xl md:text-5xl font-semibold font-serif text-background leading-[1.1] tracking-tight max-w-4xl"
         >
-          30 to 40 percent of AI spend is waste. Nobody inside the org knows
-          where it goes.
+          30% of AI spend is waste and nobody knows where it goes
         </motion.p>
       </div>
     </section>
