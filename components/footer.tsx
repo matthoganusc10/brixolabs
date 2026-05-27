@@ -5,9 +5,10 @@ import { type ReactNode } from "react";
 import { siteConfig } from "@/lib/metadata";
 
 const navLinks = [
-  { label: "How We Work", href: "#how-it-works" },
-  { label: "Agents", href: "#agents" },
-  { label: "Book a consultation", href: siteConfig.bookingUrl, external: true },
+  { label: "The Problem", href: "#problem" },
+  { label: "The Audit", href: "#audit" },
+  { label: "FAQ", href: "#faq" },
+  { label: "Book an audit", href: siteConfig.bookingUrl, external: true },
 ];
 
 export function Footer(): ReactNode {
@@ -27,7 +28,8 @@ export function Footer(): ReactNode {
               priority={false}
             />
             <p className="text-sm text-muted-foreground max-w-xs">
-              Ship agents that deliver ROI without the headaches.
+              AI cost intelligence. We find the waste in your AI spend and show
+              you exactly what to cut.
             </p>
             <p className="text-sm text-muted-foreground max-w-xs">
               Brought to you from the team behind{" "}
@@ -61,7 +63,7 @@ export function Footer(): ReactNode {
         </div>
         <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row justify-between gap-4 text-xs text-muted-foreground">
           <p>© {year} Brixo Labs. All rights reserved.</p>
-          <p>Designed, built, and managed — end to end.</p>
+          <p>AI is expensive. Waste is optional.</p>
         </div>
       </div>
     </footer>

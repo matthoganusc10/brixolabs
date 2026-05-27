@@ -8,9 +8,9 @@ import { siteConfig } from "@/lib/metadata";
 const ease = [0.23, 1, 0.32, 1] as const;
 
 const navLinks = [
-  { label: "How We Work", href: "#how-it-works" },
-  { label: "Agents", href: "#agents" },
-  { label: "Problem", href: "#problem" },
+  { label: "The Problem", href: "#problem" },
+  { label: "The Audit", href: "#audit" },
+  { label: "FAQ", href: "#faq" },
 ];
 
 function HamburgerIcon({ isOpen }: { isOpen: boolean }): ReactNode {
@@ -90,7 +90,7 @@ export function Header(): ReactNode {
               rel="noopener noreferrer"
               className="px-5 py-2 text-sm font-medium bg-foreground text-background rounded-full hover:bg-foreground/90 transition-colors"
             >
-              Book a consultation
+              Book an audit
             </a>
           </motion.div>
 
@@ -135,7 +135,7 @@ export function Header(): ReactNode {
                 onClick={() => setMobileOpen(false)}
                 className="mt-6 w-full py-3 text-center text-sm font-medium bg-foreground text-background rounded-full hover:bg-foreground/90 transition-colors"
               >
-                Book a consultation
+                Book an audit
               </a>
             </nav>
           </motion.div>

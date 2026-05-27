@@ -3,11 +3,17 @@ import type { Metadata } from "next";
 export const siteConfig = {
   name: "Brixo Labs",
   description:
-    "Brixo Labs designs, builds, and manages AI agents that hit the numbers you care about. From use case to production, with measurement at every stage.",
+    "Brixo audits your team's AI usage, finds the overspend, and shows you exactly what to cut. 30 to 40 percent of AI spend is waste — we find it.",
   url: "https://brixolabs.com",
   ogImage: "/og-image.png",
   creator: "@brixolabs",
   bookingUrl: "https://zcal.co/i/k4jSoY55",
+  // Seeded trust-strip figures, surfaced as a count-up ticker in the hero.
+  // Update as new audit findings come in.
+  waste: {
+    dollars: 482000,
+    teams: 14,
+  },
   authors: [
     {
       name: "Brixo Labs",
@@ -15,14 +21,14 @@ export const siteConfig = {
     },
   ],
   keywords: [
-    "AI agents",
-    "agent development",
-    "AI consulting",
-    "agent deployment",
-    "AI operations",
-    "autonomous agents",
-    "LLM applications",
-    "AI strategy",
+    "AI cost intelligence",
+    "AI cost optimization",
+    "AI spend audit",
+    "token cost optimization",
+    "LLM cost management",
+    "FinOps for AI",
+    "AI waste audit",
+    "model routing",
   ],
 } as const;
 
