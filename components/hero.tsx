@@ -36,7 +36,6 @@ function useCountUp(target: number, durationMs: number, start: boolean): number 
 export function Hero(): ReactNode {
   const [tickerOn, setTickerOn] = useState(false);
   const dollars = useCountUp(siteConfig.spend.dollars, 1800, tickerOn);
-  const teams = useCountUp(siteConfig.spend.teams, 1800, tickerOn);
 
   return (
     <section className="relative min-h-dvh w-full overflow-hidden bg-background flex items-center">
@@ -117,12 +116,11 @@ export function Hero(): ReactNode {
             <span className="relative inline-flex h-2 w-2 rounded-full bg-foreground" />
           </span>
           <p className="font-mono tabular-nums">
-            Brixo has mapped{" "}
+            Brixo has helped clients gain control over{" "}
             <span className="text-foreground font-medium">
               ${dollars.toLocaleString("en-US")}
             </span>{" "}
-            in AI spend across{" "}
-            <span className="text-foreground font-medium">{teams}</span> teams.
+            in AI spend savings.
           </p>
         </motion.div>
       </div>

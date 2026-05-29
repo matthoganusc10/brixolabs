@@ -11,8 +11,7 @@ export const siteConfig = {
   // Seeded trust-strip figures, surfaced as a count-up ticker in the hero.
   // Update as new audit findings come in.
   spend: {
-    dollars: 12_400_000,
-    teams: 14,
+    dollars: 1_400_000,
   },
   authors: [
     {

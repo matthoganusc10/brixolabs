@@ -1,0 +1,25 @@
+# Brixo
+
+> Brixo gives engineering teams visibility and control over their AI spend — across every tool, model, and engineer. See where it goes, understand it, and stay ahead of it.
+
+Brixo is an AI spend intelligence platform. It pulls every dollar of AI spend into a single view, shows exactly where it goes by tool, model, and team member, and surfaces optimization opportunities — without putting limits on engineers.
+
+## Product
+
+Brixo audits AI usage across tools like GitHub Copilot, Cursor, Claude, ChatGPT, and custom LLM integrations. It maps token economics, identifies wasteful patterns (context thrashing, idle seats, over-provisioned models), and delivers a leadership-ready readout.
+
+Key capabilities:
+- Unified AI spend dashboard across all tools and models
+- Per-engineer and per-team attribution
+- Threshold alerts (not hard caps — engineers are never throttled)
+- Prompt and context optimization recommendations
+- Multi-model routing analysis
+
+## Problem It Solves
+
+AI pricing is complex: token economics, cached vs. uncached input, reasoning tokens, per-seat fees stacked on per-token fees. Most teams can't answer a basic question — where did our AI spend actually go, by whom, on what, and is it working? Brixo answers it.
+
+## Company
+
+- Website: https://brixo.com
+- Booking: https://zcal.co/i/k4jSoY55
