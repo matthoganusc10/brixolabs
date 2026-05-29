@@ -22,4 +22,4 @@ AI pricing is complex: token economics, cached vs. uncached input, reasoning tok
 ## Company
 
 - Website: https://brixo.com
-- Booking: https://zcal.co/i/k4jSoY55
+- Booking: https://zcal.co/t/brixo/45-min

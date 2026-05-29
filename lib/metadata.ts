@@ -7,7 +7,7 @@ export const siteConfig = {
   url: "https://brixo.com",
   ogImage: "/og-image.png",
   creator: "@brixo",
-  bookingUrl: "https://zcal.co/i/k4jSoY55",
+  bookingUrl: "https://zcal.co/t/brixo/45-min",
   // Seeded trust-strip figures, surfaced as a count-up ticker in the hero.
   // Update as new audit findings come in.
   spend: {
