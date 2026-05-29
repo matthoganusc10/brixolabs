@@ -35,8 +35,8 @@ function useCountUp(target: number, durationMs: number, start: boolean): number 
 
 export function Hero(): ReactNode {
   const [tickerOn, setTickerOn] = useState(false);
-  const dollars = useCountUp(siteConfig.waste.dollars, 1800, tickerOn);
-  const teams = useCountUp(siteConfig.waste.teams, 1800, tickerOn);
+  const dollars = useCountUp(siteConfig.spend.dollars, 1800, tickerOn);
+  const teams = useCountUp(siteConfig.spend.teams, 1800, tickerOn);
 
   return (
     <section className="relative min-h-dvh w-full overflow-hidden bg-background flex items-center">
@@ -61,7 +61,7 @@ export function Hero(): ReactNode {
           transition={{ duration: 0.6, delay: 0.1, ease }}
           className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground mb-10"
         >
-          AI cost intelligence
+          Visibility and control for AI spend
         </motion.p>
 
         <motion.h1
@@ -70,8 +70,8 @@ export function Hero(): ReactNode {
           transition={{ duration: 0.8, delay: 0.25, ease }}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium font-serif text-foreground leading-[1.05] tracking-tight max-w-4xl"
         >
-          AI is expensive.{" "}
-          <span className="italic text-foreground/60">Waste is optional.</span>
+          Get control of your{" "}
+          <span className="italic text-[#FE79BB]">AI spend</span>.
         </motion.h1>
 
         <motion.p
@@ -80,8 +80,9 @@ export function Hero(): ReactNode {
           transition={{ duration: 0.6, delay: 0.5, ease }}
           className="mt-10 text-lg sm:text-xl font-medium text-foreground max-w-2xl leading-snug"
         >
-          Brixo audits your team&apos;s AI usage, finds the overspend, and shows
-          you exactly what to cut.
+          Brixo shows you exactly where your team&apos;s AI spend goes &mdash;
+          across every tool, model, and engineer &mdash; so you can finally see
+          it, understand it, and stay ahead of it.
         </motion.p>
 
         <motion.div
@@ -97,7 +98,7 @@ export function Hero(): ReactNode {
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-2 px-7 py-4 bg-foreground text-background rounded-full text-sm font-medium hover:bg-foreground/90 active:scale-[0.98] transition-all duration-150"
           >
-            Book an audit
+            See where your spend goes
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </a>
         </motion.div>
@@ -116,11 +117,11 @@ export function Hero(): ReactNode {
             <span className="relative inline-flex h-2 w-2 rounded-full bg-foreground" />
           </span>
           <p className="font-mono tabular-nums">
-            Brixo has identified{" "}
+            Brixo has mapped{" "}
             <span className="text-foreground font-medium">
               ${dollars.toLocaleString("en-US")}
             </span>{" "}
-            in AI waste across{" "}
+            in AI spend across{" "}
             <span className="text-foreground font-medium">{teams}</span> teams.
           </p>
         </motion.div>

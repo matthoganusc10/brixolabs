@@ -9,7 +9,7 @@ const ease = [0.23, 1, 0.32, 1] as const;
 
 const navLinks = [
   { label: "The Problem", href: "#problem" },
-  { label: "The Audit", href: "#audit" },
+  { label: "Why Brixo", href: "#why" },
   { label: "FAQ", href: "#faq" },
 ];
 
@@ -45,17 +45,16 @@ export function Header(): ReactNode {
           <motion.a
             href="#"
             className="flex items-center"
-            aria-label="Brixo Labs home"
+            aria-label="Brixo home"
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease }}
           >
             <Image
-              src="/brixolabs.svg"
-              alt="Brixo Labs"
-              width={127}
-              height={19}
-              className="dark:invert"
+              src="/Brixo_Logo_Long.svg"
+              alt="Brixo"
+              width={136}
+              height={36}
               priority
             />
           </motion.a>
@@ -90,7 +89,7 @@ export function Header(): ReactNode {
               rel="noopener noreferrer"
               className="px-5 py-2 text-sm font-medium bg-foreground text-background rounded-full hover:bg-foreground/90 transition-colors"
             >
-              Book an audit
+              See where your spend goes
             </a>
           </motion.div>
 
@@ -135,7 +134,7 @@ export function Header(): ReactNode {
                 onClick={() => setMobileOpen(false)}
                 className="mt-6 w-full py-3 text-center text-sm font-medium bg-foreground text-background rounded-full hover:bg-foreground/90 transition-colors"
               >
-                Book an audit
+                See where your spend goes
               </a>
             </nav>
           </motion.div>

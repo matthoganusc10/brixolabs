@@ -18,7 +18,7 @@ export function FinalCTA(): ReactNode {
           transition={{ duration: 0.6, ease }}
           className="text-4xl sm:text-5xl md:text-6xl font-medium font-serif leading-tight max-w-3xl mx-auto"
         >
-          Cut the waste.
+          Get control of your AI spend.
         </motion.h2>
 
         <motion.div
@@ -34,7 +34,7 @@ export function FinalCTA(): ReactNode {
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-2 px-8 py-4 bg-background text-foreground rounded-full text-sm font-medium hover:bg-background/90 active:scale-[0.98] transition-all duration-150"
           >
-            Book an audit
+            See where your spend goes
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </a>
         </motion.div>

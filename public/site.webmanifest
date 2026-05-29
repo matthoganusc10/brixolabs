@@ -1,7 +1,7 @@
 {
-  "name": "Brixo Labs",
-  "short_name": "Brixo Labs",
-  "description": "Brixo Labs designs, builds, and manages AI agents that hit the numbers you care about. From use case to production, with measurement at every stage.",
+  "name": "Brixo",
+  "short_name": "Brixo",
+  "description": "Brixo gives teams visibility and control over their AI spend — across every tool, model, and engineer. See where it goes, understand it, and stay ahead of it.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

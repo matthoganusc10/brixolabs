@@ -9,19 +9,19 @@ const ease = [0.16, 1, 0.3, 1] as const;
 const items = [
   {
     q: "We already monitor cloud costs.",
-    a: "Cloud cost tools weren't built for token economics, prompt optimization, or multi-model routing. AWS tools don't work for this.",
+    a: "Cloud cost tools weren't built for token economics, prompt optimization, or multi-model routing. The tools that work for AWS don't work for this.",
   },
   {
-    q: "Won't optimization reduce quality?",
-    a: "We're not changing what your tools do. We find places where you pay more for the same result. Different model, same output, lower bill.",
+    q: "Will this put limits on my engineers?",
+    a: "No. Brixo gives you visibility and threshold alerts, not hard caps. You decide what to do with the information. Nobody on your team gets throttled or blocked mid-task.",
   },
   {
-    q: "We're too early to optimize AI.",
-    a: "Early-stage costs compound fast. The waste patterns we find on day one — wrong model, wasted context, idle seats — quietly cost teams five and six figures before anyone audits the invoice.",
+    q: "Will optimization hurt output quality?",
+    a: "We're not changing what your tools do. We surface places where you pay more for the same result. Same output, lower bill, your call on whether to act.",
   },
   {
-    q: "How long does the audit take?",
-    a: "Three weeks end to end, including the leadership readout.",
+    q: "We're too early to think about this.",
+    a: "The visibility gap compounds fast. Wrong model, wasted context, idle seats: these quietly run into five and six figures before anyone has a single view of the invoice. Earlier is cheaper.",
   },
 ];
 

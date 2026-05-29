@@ -6,9 +6,14 @@ import { siteConfig } from "@/lib/metadata";
 
 const navLinks = [
   { label: "The Problem", href: "#problem" },
-  { label: "The Audit", href: "#audit" },
+  { label: "Why Brixo", href: "#why" },
   { label: "FAQ", href: "#faq" },
-  { label: "Book an audit", href: siteConfig.bookingUrl, external: true },
+  { label: "Privacy", href: "/privacy" },
+  {
+    label: "See where your spend goes",
+    href: siteConfig.bookingUrl,
+    external: true,
+  },
 ];
 
 export function Footer(): ReactNode {
@@ -20,28 +25,15 @@ export function Footer(): ReactNode {
         <div className="flex flex-col sm:flex-row justify-between gap-8 items-start">
           <div className="flex flex-col gap-4">
             <Image
-              src="/brixolabs.svg"
-              alt="Brixo Labs"
-              width={127}
-              height={19}
-              className="dark:invert"
+              src="/Brixo_Logo_Long.svg"
+              alt="Brixo"
+              width={136}
+              height={36}
               priority={false}
             />
             <p className="text-sm text-muted-foreground max-w-xs">
-              AI cost intelligence. We find the waste in your AI spend and show
-              you exactly what to cut.
-            </p>
-            <p className="text-sm text-muted-foreground max-w-xs">
-              Brought to you from the team behind{" "}
-              <a
-                href="https://www.brixo.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-foreground underline underline-offset-2 hover:text-foreground/70 transition-colors"
-              >
-                Brixo
-              </a>
-              .
+              Visibility and control for AI spend. See where it goes, understand
+              it, and stay ahead of it.
             </p>
           </div>
           <nav
@@ -62,8 +54,8 @@ export function Footer(): ReactNode {
           </nav>
         </div>
         <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row justify-between gap-4 text-xs text-muted-foreground">
-          <p>© {year} Brixo Labs. All rights reserved.</p>
-          <p>AI is expensive. Waste is optional.</p>
+          <p>© {year} Brixo. All rights reserved.</p>
+          <p>Get control of your AI spend.</p>
         </div>
       </div>
     </footer>
