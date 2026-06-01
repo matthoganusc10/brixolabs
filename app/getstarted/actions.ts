@@ -37,5 +37,24 @@ export async function submitGetStarted(data: {
     return { success: false, error: "Could not save your details. Please try again." };
   }
 
+  // Fire notification email (non-blocking — don't fail the submission if this errors)
+  await fetch("https://app.loops.so/api/v1/transactional", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      transactionalId: "cmpvr3q9g07c70j2mkv437mg8",
+      email: "matt@growthcadet.com",
+      dataVariables: {
+        leadName: data.name,
+        leadEmail: data.email,
+        leadCompany: data.company,
+        leadSpend: data.spend,
+      },
+    }),
+  }).catch((err) => console.error("Loops transactional error:", err));
+
   return { success: true };
 }
