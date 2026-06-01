@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Spend Audit &amp; Analyst by Brixo</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ===== THEME VARIABLES ===== */
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --surface-2: #16161f;
+  --surface-hover: #1c1c28;
+  --border: #24243a;
+  --border-subtle: #1e1e30;
+  --text: #e8e8f0;
+  --text-secondary: #8888a0;
+  --text-muted: #55556a;
+  --accent: #6366f1;
+  --accent-light: #818cf8;
+  --accent-dim: rgba(99,102,241,0.15);
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.15);
+  --red: #ef4444;
+  --red-dim: rgba(239,68,68,0.15);
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,0.15);
+  --cyan: #06b6d4;
+  --cyan-dim: rgba(6,182,212,0.15);
+  --pink: #ec4899;
+  --gold: #eab308;
+  --gold-dim: rgba(234,179,8,0.12);
+  --sidebar-w: 240px;
+  --topbar-h: 52px;
+}
+[data-theme="light"] {
+  --bg: #f5f5f8;
+  --surface: #ffffff;
+  --surface-2: #f0f0f5;
+  --surface-hover: #e8e8f0;
+  --border: #d4d4e0;
+  --border-subtle: #e0e0ea;
+  --text: #1a1a2e;
+  --text-secondary: #5a5a72;
+  --text-muted: #8888a0;
+  --accent: #4f46e5;
+  --accent-light: #6366f1;
+  --accent-dim: rgba(79,70,229,0.1);
+  --green: #16a34a;
+  --green-dim: rgba(22,163,74,0.1);
+  --red: #dc2626;
+  --red-dim: rgba(220,38,38,0.1);
+  --amber: #d97706;
+  --amber-dim: rgba(217,119,6,0.1);
+  --cyan: #0891b2;
+  --cyan-dim: rgba(8,145,178,0.1);
+  --pink: #db2777;
+  --gold: #ca8a04;
+  --gold-dim: rgba(202,138,4,0.1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; height: var(--topbar-h);
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 20px; z-index: 60; gap: 12px;
+}
+.topbar-toggle, .theme-toggle {
+  background: none; border: 1px solid var(--border); color: var(--text-muted);
+  width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+}
+.topbar-toggle:hover, .theme-toggle:hover { color: var(--text); border-color: var(--text-secondary); }
+.topbar-logo { display: flex; align-items: center; gap: 8px; }
+.topbar-logo-mark {
+  width: 24px; height: 24px; border-radius: 5px;
+  background: linear-gradient(135deg, var(--accent), var(--cyan));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: #fff;
+}
+.topbar-title { font-size: 15px; font-weight: 700; white-space: nowrap; }
+.topbar-subtitle { font-size: 11px; color: var(--text-muted); margin-left: 4px; }
+.topbar-spacer { flex: 1; }
+.topbar-date, .confidential-badge {
+  padding: 3px 10px; border-radius: 4px; font-size: 11px;
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.topbar-date { background: var(--accent-dim); color: var(--accent-light); }
+.confidential-badge { background: var(--red-dim); color: var(--red); }
+.topbar-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 7px;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  color: #fff; font-size: 12px; font-weight: 600;
+  text-decoration: none; transition: opacity 0.2s; white-space: nowrap;
+}
+.topbar-cta:hover { opacity: 0.88; }
+.topbar-cta svg { width: 14px; height: 14px; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  position: fixed; top: var(--topbar-h); left: 0; bottom: 0; width: var(--sidebar-w);
+  background: var(--surface); border-right: 1px solid var(--border);
+  padding: 12px 0; overflow-y: auto; z-index: 50; transition: transform 0.2s;
+  display: flex; flex-direction: column;
+}
+body.sidebar-closed .sidebar { transform: translateX(calc(-1 * var(--sidebar-w))); }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; cursor: pointer; font-size: 13px; color: var(--text-secondary);
+  transition: all 0.12s; border-left: 3px solid transparent; text-decoration: none;
+}
+.nav-item:hover { color: var(--text); background: var(--surface-2); }
+.nav-item.active { color: var(--accent-light); border-left-color: var(--accent); background: var(--accent-dim); }
+.nav-num {
+  width: 22px; height: 22px; border-radius: 5px; background: var(--surface-2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.nav-item.active .nav-num { background: var(--accent); color: #fff; }
+.nav-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-divider { height: 1px; background: var(--border); margin: 8px 16px; }
+.sidebar-footer { margin-top: auto; padding: 16px; border-top: 1px solid var(--border); }
+.sidebar-cta {
+  display: block; text-align: center; padding: 10px 14px;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  color: #fff; font-size: 12px; font-weight: 600; border-radius: 8px;
+  text-decoration: none; transition: opacity 0.2s;
+}
+.sidebar-cta:hover { opacity: 0.9; }
+.sidebar-cta-sub { font-size: 10px; color: var(--text-muted); text-align: center; margin-top: 6px; }
+
+/* ===== MAIN ===== */
+.main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 24px 32px; max-width: 1200px; transition: margin-left 0.2s; }
+body.sidebar-closed .main { margin-left: 0; }
+.sample-banner {
+  background: linear-gradient(135deg, var(--amber-dim) 0%, rgba(245,158,11,0.03) 100%);
+  border: 1px solid rgba(245,158,11,0.25); border-radius: 10px;
+  padding: 14px 20px; margin-bottom: 24px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--amber);
+}
+
+/* ===== EXECUTIVE HEADLINE ===== */
+.exec-headline {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 28px 32px; margin-bottom: 24px;
+}
+.exec-headline h2 {
+  font-size: 22px; font-weight: 700; margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--text) 0%, var(--accent-light) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.exec-headline p { font-size: 14px; color: var(--text-secondary); max-width: 760px; line-height: 1.7; }
+.exec-highlights, .summary-bullets { margin-top: 14px; padding-left: 18px; color: var(--text-secondary); font-size: 13px; line-height: 1.7; max-width: 860px; }
+.exec-highlights strong, .summary-bullets strong { color: var(--text); }
+.exec-headline .metric-row {
+  display: flex; gap: 32px; margin-top: 16px; padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+}
+.exec-headline .metric-value { font-size: 20px; font-weight: 700; }
+.exec-headline .metric-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ===== SECTIONS ===== */
+.section { margin-bottom: 8px; scroll-margin-top: calc(var(--topbar-h) + 16px); }
+.section-header { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 14px 0; user-select: none; }
+.section-num { background: var(--accent); color: #fff; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.section-title { font-size: 18px; font-weight: 600; }
+.section-chevron { margin-left: auto; font-size: 20px; color: var(--text-muted); transition: transform 0.2s; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: var(--surface); border: 1px solid var(--border); }
+.section-header:hover .section-chevron { border-color: var(--text-secondary); color: var(--text); }
+.section.collapsed .section-chevron { transform: rotate(-90deg); }
+.section-summary { font-size: 14px; color: var(--text-secondary); line-height: 1.65; padding: 0 0 16px 40px; max-width: 860px; }
+.section-summary ul { padding-left: 18px; }
+.section.collapsed .section-body { display: none; }
+.section-body { padding: 0 0 24px 0; }
+.section-divider { height: 1px; background: var(--border-subtle); margin: 0; }
+
+/* ===== CARDS, CHARTS, TABLES ===== */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.kpi-card, .chart-card, .roi-card, .alignment-card, .next-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+.kpi-card:hover, .rec-card:hover { border-color: var(--accent); }
+.kpi-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.kpi-value { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+.kpi-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+.kpi-trend, .impact-badge, .difficulty-badge, .efficiency-badge { display: inline-flex; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+.kpi-trend.up { background: var(--red-dim); color: var(--red); }
+.kpi-trend.down { background: var(--green-dim); color: var(--green); }
+.kpi-trend.neutral { background: var(--accent-dim); color: var(--accent-light); }
+.kpi-trend.flag { background: var(--amber-dim); color: var(--amber); }
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.chart-card.full { grid-column: 1 / -1; }
+.chart-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.chart-subtitle { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; }
+.chart-container { position: relative; height: 260px; }
+.chart-container.short { height: 200px; }
+.roi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+.roi-card { text-align: left; position: relative; overflow: hidden; }
+.roi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--cyan)); }
+.roi-card .roi-value { font-size: 30px; font-weight: 700; letter-spacing: -1px; }
+.roi-card .roi-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+.roi-card .roi-context { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+.findings-table, .user-table, .modal-table { width: 100%; border-collapse: collapse; }
+.findings-table th, .user-table th, .modal-table th { text-align: left; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.findings-table td, .user-table td, .modal-table td { padding: 12px 14px; border-bottom: 1px solid var(--border-subtle); font-size: 13px; vertical-align: top; }
+.findings-table tr:hover td, .user-table tr:hover td, .modal-table tr:hover td { background: var(--surface-hover); }
+.finding-title { font-weight: 600; margin-bottom: 3px; }
+.finding-desc { color: var(--text-secondary); font-size: 12px; }
+.impact-high { background: var(--red-dim); color: var(--red); }
+.impact-medium { background: var(--amber-dim); color: var(--amber); }
+.difficulty-badge { color: var(--text-secondary); border: 1px solid var(--border); }
+.badge-onetime { background: var(--cyan-dim); color: var(--cyan); display: inline-flex; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+.user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-dim); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--accent-light); margin-right: 8px; vertical-align: middle; }
+.efficiency-high { background: var(--green-dim); color: var(--green); }
+.efficiency-mid { background: var(--amber-dim); color: var(--amber); }
+.efficiency-low { background: var(--red-dim); color: var(--red); }
+.rec-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 10px; display: grid; grid-template-columns: 40px 1fr 120px 90px; gap: 14px; align-items: center; transition: border-color 0.2s; }
+.rec-num { width: 32px; height: 32px; border-radius: 6px; background: var(--accent-dim); color: var(--accent-light); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+.rec-title { font-weight: 600; margin-bottom: 3px; font-size: 14px; }
+.rec-desc { color: var(--text-secondary); font-size: 12px; }
+.rec-savings { font-weight: 700; color: var(--green); font-size: 16px; text-align: right; }
+.rec-savings.onetime { color: var(--cyan); }
+.rec-savings-label { font-size: 10px; color: var(--text-muted); text-align: right; }
+.rec-effort { text-align: center; }
+.alignment-grid, .next-grid, .connect-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.next-grid, .connect-grid { grid-template-columns: 1fr 1fr; }
+.alignment-card { text-align: center; }
+.alignment-pct { font-size: 42px; font-weight: 700; letter-spacing: -2px; }
+.alignment-label { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+.alignment-detail { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+.alignment-bar { height: 6px; border-radius: 3px; background: var(--bg); margin-top: 10px; overflow: hidden; }
+.alignment-bar-fill { height: 100%; border-radius: 3px; }
+.callout { padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-top: 14px; font-size: 13px; }
+.callout-label { font-weight: 600; margin-right: 6px; }
+.connect-card { background: var(--surface); border: 1px dashed var(--border); border-radius: 10px; padding: 24px; position: relative; transition: border-color 0.2s; cursor: pointer; }
+.connect-card:hover { border-color: var(--accent); }
+.connect-card:hover .connect-title { color: var(--accent-light); }
+.connect-card::after { content: 'View sample details ->'; display: block; margin-top: 14px; font-size: 11px; font-weight: 600; color: var(--accent-light); opacity: 0; transition: opacity 0.2s; }
+.connect-card:hover::after { opacity: 1; }
+.connect-icon { width: 40px; height: 40px; border-radius: 8px; background: var(--accent-dim); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px; }
+.connect-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.connect-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
+.connect-items { list-style: none; padding: 0; }
+.connect-items li { font-size: 12px; color: var(--text-muted); padding: 3px 0; display: flex; align-items: center; gap: 6px; }
+.connect-items li::before { content: '+'; color: var(--accent-light); font-weight: 700; }
+.connect-badge { position: absolute; top: 16px; right: 16px; padding: 3px 10px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: var(--cyan-dim); color: var(--cyan); }
+.next-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+.next-list { color: var(--text-secondary); font-size: 13px; line-height: 1.8; }
+.platform-cta { background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(6,182,212,0.08) 100%); border: 1px solid rgba(99,102,241,0.25); border-radius: 12px; padding: 28px 32px; margin-top: 24px; text-align: center; }
+.platform-cta h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.platform-cta p { font-size: 13px; color: var(--text-secondary); max-width: 600px; margin: 0 auto 16px; }
+.platform-cta-btn { display: inline-block; padding: 10px 24px; background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; font-size: 13px; font-weight: 600; border-radius: 8px; text-decoration: none; transition: opacity 0.2s; }
+.platform-cta-features { display: flex; justify-content: center; gap: 24px; margin-top: 16px; flex-wrap: wrap; }
+.platform-cta-feature { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+.platform-cta-feature::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+.report-footer { border-top: 1px solid var(--border); padding: 24px 0; margin-top: 16px; display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); font-size: 11px; }
+.footer-brand { display: flex; align-items: center; gap: 6px; }
+.footer-brand-mark { width: 16px; height: 16px; border-radius: 3px; background: linear-gradient(135deg, var(--accent), var(--cyan)); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; width: 90%; max-width: 720px; max-height: 85vh; overflow-y: auto; padding: 28px 32px; transform: translateY(16px) scale(0.97); transition: transform 0.25s cubic-bezier(0.16,1,0.3,1); }
+.modal-overlay.open .modal { transform: translateY(0) scale(1); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.modal-title { font-size: 18px; font-weight: 700; }
+.modal-badge { padding: 3px 10px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: var(--cyan-dim); color: var(--cyan); }
+.modal-close { background: none; border: 1px solid var(--border); color: var(--text-muted); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+.modal-section { margin-bottom: 20px; }
+.modal-section-title { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 10px; }
+.modal-metric-row { display: flex; gap: 12px; margin-bottom: 16px; }
+.modal-metric { flex: 1; background: var(--surface-2); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 14px; text-align: center; }
+.modal-metric-value { font-size: 22px; font-weight: 700; }
+.modal-metric-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.modal-note { background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.2); border-radius: 8px; padding: 12px 16px; font-size: 12px; color: var(--text-secondary); margin-top: 16px; }
+.modal-note strong { color: var(--accent-light); }
+.modal-cta { display: inline-block; margin-top: 16px; padding: 10px 20px; background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; font-size: 13px; font-weight: 600; border-radius: 8px; text-decoration: none; }
+.chat-fab { position: fixed; bottom: 24px; right: 24px; z-index: 100; width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--border); cursor: pointer; background: var(--surface); box-shadow: 0 6px 22px rgba(0,0,0,0.22); display: flex; align-items: center; justify-content: center; transition: transform 0.2s, box-shadow 0.2s; }
+.chat-fab:hover { transform: scale(1.06); box-shadow: 0 8px 28px rgba(0,0,0,0.3); }
+.chat-fab-logo { width: 32px; height: 32px; border-radius: 5px; background: transparent; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: var(--text); transition: all 0.2s; }
+.chat-fab.open .chat-fab-logo { font-size: 22px; background: transparent; }
+.chat-fab-pulse { position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%; background: var(--green); border: 2px solid var(--bg); transition: opacity 0.2s; }
+.chat-fab.open .chat-fab-pulse { opacity: 0; }
+.chat-drawer { position: fixed; bottom: 92px; right: 24px; z-index: 99; width: 380px; height: 520px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 12px 48px rgba(0,0,0,0.4); display: flex; flex-direction: column; transform: translateY(16px) scale(0.95); opacity: 0; pointer-events: none; transition: all 0.25s cubic-bezier(0.16,1,0.3,1); }
+.chat-drawer.open { transform: translateY(0) scale(1); opacity: 1; pointer-events: all; }
+.chat-drawer-header { display: flex; align-items: center; gap: 10px; padding: 16px 18px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.chat-drawer-avatar { width: 34px; height: 34px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), var(--cyan)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0; }
+.chat-drawer-info { flex: 1; }
+.chat-drawer-title { font-size: 14px; font-weight: 600; }
+.chat-drawer-status { font-size: 11px; color: var(--green); display: flex; align-items: center; gap: 4px; }
+.chat-drawer-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+.chat-drawer-body { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.chat-msg { max-width: 88%; padding: 12px 16px; border-radius: 12px; font-size: 13px; line-height: 1.55; }
+.chat-msg.agent { background: var(--surface-2); border: 1px solid var(--border-subtle); align-self: flex-start; border-bottom-left-radius: 4px; }
+.chat-msg.user { background: var(--accent); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.chat-suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.chat-suggestion { padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); font-size: 11px; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+.chat-suggestion:hover { border-color: var(--accent); color: var(--accent-light); background: var(--accent-dim); }
+.chat-drawer-input { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.chat-drawer-input input { flex: 1; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--text); outline: none; transition: border-color 0.15s; font-family: inherit; }
+.chat-drawer-input button { width: 36px; height: 36px; border-radius: 8px; border: none; background: var(--accent); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+@media (max-width: 900px) {
+  .kpi-grid, .roi-grid { grid-template-columns: repeat(2, 1fr); }
+  .chart-grid, .connect-grid, .next-grid, .alignment-grid { grid-template-columns: 1fr; }
+  .rec-card { grid-template-columns: 1fr; }
+  .sidebar { transform: translateX(calc(-1 * var(--sidebar-w))); }
+  .main { margin-left: 0; }
+  .exec-headline .metric-row { flex-wrap: wrap; gap: 16px; }
+  .chat-drawer { width: calc(100vw - 32px); right: 16px; bottom: 84px; height: 60vh; }
+  .chat-fab { bottom: 16px; right: 16px; }
+  .topbar-cta span { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="topbar-toggle" onclick="toggleSidebar()" title="Toggle navigation">&#9776;</button>
+  <div class="topbar-logo">
+    <div class="topbar-logo-mark" style="background:transparent;"><svg viewBox="0 0 120 100" width="24" height="20" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="tbsp" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect x="0.7" width="2.4" height="4.5" fill="#F472B6" opacity="0.9"/></pattern><pattern id="tbso" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect y="0.7" width="4.5" height="2.4" fill="#FFA375" opacity="0.9"/></pattern><pattern id="tbsg" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect y="0.7" width="4.5" height="2.4" fill="#6EE7B7" opacity="0.85"/></pattern><pattern id="tbsp2" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect x="0.7" width="2.4" height="4.5" fill="#F472B6" opacity="0.7"/></pattern></defs><polygon points="39.4,21 55,30 39.4,39 23.8,30" fill="url(#tbso)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="70.6,21 86.2,30 70.6,39 55,30" fill="url(#tbso)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="23.8,48 23.8,30 39.4,39 39.4,57" fill="url(#tbsp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 55,30 39.4,39 39.4,57" fill="url(#tbsp2)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 55,30 70.6,39 70.6,57" fill="url(#tbsp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="86.2,48 86.2,30 70.6,39 70.6,57" fill="url(#tbsp2)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 70.6,57 55,66 39.4,57" fill="url(#tbso)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="39.4,75 39.4,57 55,66 55,84" fill="url(#tbsp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="70.6,75 70.6,57 55,66 55,84" fill="url(#tbsg)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+    <div class="topbar-title">AI Spend Audit &amp; Analyst</div>
+    <div class="topbar-subtitle">by Brixo</div>
+  </div>
+  <div class="topbar-spacer"></div>
+  <a class="topbar-cta" href="https://zcal.co/t/brixo/45-min" target="_blank" rel="noopener"><span>Talk to Brixo</span></a>
+  <div class="topbar-date">Mar 1 - May 31, 2026</div>
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">&#9788;</button>
+</div>
+
+<nav class="sidebar" id="sidebar">
+  <a class="nav-item active" href="#s1" data-section="s1" onclick="navTo(event,'s1')"><div class="nav-num">1</div><div class="nav-label">Spend Overview</div></a>
+  <a class="nav-item" href="#s2" data-section="s2" onclick="navTo(event,'s2')"><div class="nav-num">2</div><div class="nav-label">Engineering Usage</div></a>
+  <a class="nav-item" href="#s3" data-section="s3" onclick="navTo(event,'s3')"><div class="nav-num">3</div><div class="nav-label">Seats &amp; Licenses</div></a>
+  <a class="nav-item" href="#s4" data-section="s4" onclick="navTo(event,'s4')"><div class="nav-num">4</div><div class="nav-label">Usage &amp; Agent Optimization</div></a>
+  <a class="nav-item" href="#s5" data-section="s5" onclick="navTo(event,'s5')"><div class="nav-num">5</div><div class="nav-label">Activity Attribution</div></a>
+  <a class="nav-item" href="#s6" data-section="s6" onclick="navTo(event,'s6')"><div class="nav-num">6</div><div class="nav-label">Spend Alignment</div></a>
+  <div class="nav-divider"></div>
+  <a class="nav-item" href="#s7" data-section="s7" onclick="navTo(event,'s7')"><div class="nav-num">+</div><div class="nav-label">Improve Attribution</div></a>
+  <a class="nav-item" href="#s8" data-section="s8" onclick="navTo(event,'s8')"><div class="nav-num">&#8594;</div><div class="nav-label">Next Steps</div></a>
+  <div class="sidebar-footer">
+    <a class="sidebar-cta" href="https://zcal.co/t/brixo/45-min" target="_blank" rel="noopener">Activate Monitoring</a>
+    <div class="sidebar-cta-sub">Alerts, weekly digests, and continuous spend tracking.</div>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="sample-banner"><span style="font-size:16px;">&#9888;</span><span>Sample data for demonstration. In a live engagement, all figures derive from your actual provider invoices, seat rosters, CLI logs, and connected systems.</span></div>
+
+  <div class="exec-headline">
+    <h2>Your org spent $214K on AI across four channels. $31,600 a month is optimizable, and 42% of that sits outside engineering.</h2>
+    <p>AI spend leaves through several doors at once: seat licenses, metered API usage, autonomous agents, and prepaid credits. This report tracks all of it. Engineering usage is the largest piece and is covered in depth, but it is not the whole bill.</p>
+    <ul class="exec-highlights">
+      <li><strong>$214,400</strong> in total AI spend over the 90-day audit. Engineering is 59% of it; the other <strong>41%</strong> lives in seats and tools outside the engineering org and had no clear owner before this audit.</li>
+      <li><strong>$90,300 (42%)</strong> is per-seat subscriptions. <strong>47 paid seats logged zero usage</strong> and 52 people hold overlapping assistants, putting <strong>$13,200 per month</strong> within reach without touching anyone's workflow.</li>
+      <li><strong>$18,400 per month</strong> is optimizable inside engineering usage (session continuity, model routing, idle agents). Combined opportunity: <strong>$31,600 per month</strong>, roughly $379K annualized, plus <strong>$8,600 in prepaid credits</strong> at risk of expiring unused.</li>
+    </ul>
+    <div class="metric-row">
+      <div class="metric-item"><div class="metric-value">$214,400</div><div class="metric-label">Total AI Spend (90d)</div></div>
+      <div class="metric-item"><div class="metric-value" style="color:var(--cyan)">$90,300</div><div class="metric-label">Seat Licenses (42%)</div></div>
+      <div class="metric-item"><div class="metric-value" style="color:var(--green)">$31.6K/mo</div><div class="metric-label">Optimization Opportunity</div></div>
+      <div class="metric-item"><div class="metric-value" style="color:var(--accent-light)">42%</div><div class="metric-label">Opportunity Outside Eng</div></div>
+    </div>
+  </div>
+
+  <div class="section" id="s1">
+    <div class="section-header" onclick="toggleSection('s1')"><div class="section-num">1</div><div class="section-title">Spend Overview</div><div class="section-chevron">&#8964;</div></div>
+    <div class="section-summary"><ul><li><strong>Total AI spend:</strong> $214,400 across all providers, seats, and channels over 90 days, or about $71,470 per month.</li><li><strong>Spend breakdown:</strong> metered API usage (45%), seat licenses (42%), autonomous agents (7%), and prepaid credits (6%).</li><li><strong>Engineering</strong> drives 59% of spend and is detailed in the next sections; the remaining 41% is seat-based or used by teams outside engineering.</li></ul></div>
+    <div class="section-body">
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-label">Total AI Spend (90d)</div><div class="kpi-value">$214,400</div><div class="kpi-sub"><span class="kpi-trend neutral">$71,470/mo across the org</span></div></div>
+        <div class="kpi-card"><div class="kpi-label">API &amp; Metered Usage</div><div class="kpi-value">$96,800</div><div class="kpi-sub">45% of spend, mostly engineering</div></div>
+        <div class="kpi-card"><div class="kpi-label">Seat Licenses</div><div class="kpi-value">$90,300</div><div class="kpi-sub">42% of spend, 228 seats, 6 depts</div></div>
+        <div class="kpi-card"><div class="kpi-label">Agents &amp; Prepaid Credits</div><div class="kpi-value">$27,300</div><div class="kpi-sub">13% of spend, machine + committed</div></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card full"><div class="chart-title">Daily AI Spend</div><div class="chart-subtitle">Total org spend across all channels, mapped against shipped feature milestones</div><div class="chart-container"><canvas id="spendTimeline"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Spend by Channel</div><div class="chart-subtitle">The doors AI spend leaves through</div><div class="chart-container short"><canvas id="spendByChannel"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Spend by Vendor</div><div class="chart-subtitle">All providers and tools, seats plus usage</div><div class="chart-container short"><canvas id="spendByVendor"></canvas></div></div>
+      </div>
+      <div class="callout"><span class="callout-label" style="color:var(--accent-light)">Why this matters:</span><span style="color:var(--text-secondary)">Usage and agents bill on what you consume, so they show up as spikes a dashboard can catch. Seats and prepaid credits bill on a fixed schedule whether or not anyone opens the tool, so they hide in plain sight. Brixo reconciles all of it against actual activity, which is where the $31,600/month of opportunity below comes from.</span></div>
+    </div>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="section" id="s2">
+    <div class="section-header" onclick="toggleSection('s2')"><div class="section-num">2</div><div class="section-title">Engineering Usage Patterns</div><div class="section-chevron">&#8964;</div></div>
+    <div class="section-summary"><ul><li><strong>Platform</strong> has the highest engineering AI spend at $42,800 and also the most tracked delivery activity.</li><li><strong>Frontend</strong> closes tickets with lower AI spend than the org average.</li><li><strong>Four engineers</strong> account for 49% of engineering spend; two are also among the strongest users by tracked delivery volume.</li></ul></div>
+    <div class="section-body">
+      <div class="roi-grid">
+        <div class="roi-card"><div class="roi-value" style="color:var(--green)">High</div><div class="roi-label">Tracked delivery volume</div><div class="roi-context">Platform team</div></div>
+        <div class="roi-card"><div class="roi-value" style="color:var(--accent-light)">2.3x</div><div class="roi-label">Tickets closed per AI dollar</div><div class="roi-context">Frontend vs org average</div></div>
+        <div class="roi-card"><div class="roi-value" style="color:var(--amber)">49%</div><div class="roi-label">Spend concentration</div><div class="roi-context">Top four engineers</div></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-title">Engineering Spend by Team</div><div class="chart-subtitle">With tracked delivery activity overlay</div><div class="chart-container short"><canvas id="spendByTeam"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Engineering Spend by Tool</div><div class="chart-subtitle">Usage and seat tools used by engineering</div><div class="chart-container short"><canvas id="spendByTool"></canvas></div></div>
+      </div>
+      <div class="chart-card" style="margin-top:14px;"><div class="chart-title">Individual Usage</div><div class="chart-subtitle">Spend and tracked activity per engineer</div><div style="overflow-x:auto;"><table class="user-table"><thead><tr><th>Engineer</th><th>90d Spend</th><th>Tracked Activity</th><th>Coaching Priority</th></tr></thead><tbody><tr><td><span class="user-avatar">JW</span>J. Walsh</td><td>$18,920</td><td>High</td><td><span class="efficiency-badge efficiency-high">Low</span></td></tr><tr><td><span class="user-avatar">KP</span>K. Patel</td><td>$16,740</td><td>High</td><td><span class="efficiency-badge efficiency-high">Low</span></td></tr><tr><td><span class="user-avatar">RM</span>R. Martinez</td><td>$14,200</td><td>Medium</td><td><span class="efficiency-badge efficiency-mid">Medium</span></td></tr><tr><td><span class="user-avatar">SL</span>S. Lee</td><td>$12,680</td><td>Medium</td><td><span class="efficiency-badge efficiency-mid">Medium</span></td></tr><tr><td><span class="user-avatar">AT</span>A. Torres</td><td>$9,340</td><td>Low</td><td><span class="efficiency-badge efficiency-low">High</span></td></tr><tr><td><span class="user-avatar">DK</span>D. Kim</td><td>$7,120</td><td>High</td><td><span class="efficiency-badge efficiency-high">Low</span></td></tr></tbody></table></div></div>
+      <div class="callout"><span class="callout-label" style="color:var(--green)">Insight:</span><span style="color:var(--text-secondary)">High spend is not automatically a problem. J. Walsh and K. Patel are high-spend users, but their usage is also tied to high tracked delivery volume. A. Torres and S. Lee are better candidates for agent configuration review, model-routing guidance, and workflow coaching.</span></div>
+    </div>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="section" id="s3">
+    <div class="section-header" onclick="toggleSection('s3')"><div class="section-num" style="background:var(--cyan)">3</div><div class="section-title">Seat &amp; License Spend</div><div class="section-chevron">&#8964;</div></div>
+    <div class="section-summary"><ul><li><strong>$90,300 (42% of all AI spend)</strong> goes to per-seat subscriptions across 228 seats in every department, not just engineering.</li><li><strong>47 seats (21%)</strong> logged zero usage in the period, and 52 people hold two or more overlapping assistants. None of this touches engineering velocity.</li><li>Reclaiming inactive seats, right-tiering licenses, and consolidating duplicates is worth <strong>~$13,200/month</strong>, the fastest and lowest-risk savings in this report.</li></ul></div>
+    <div class="section-body">
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-label">Seat &amp; License Spend (90d)</div><div class="kpi-value">$90,300</div><div class="kpi-sub">228 seats across 6 departments</div></div>
+        <div class="kpi-card"><div class="kpi-label">Zero-Usage Seats</div><div class="kpi-value" style="color:var(--red)">47</div><div class="kpi-sub"><span class="kpi-trend up">$6,100/mo reclaimable</span></div></div>
+        <div class="kpi-card"><div class="kpi-label">Overlapping Assistants</div><div class="kpi-value" style="color:var(--amber)">52</div><div class="kpi-sub">users holding 2+ AI tools</div></div>
+        <div class="kpi-card"><div class="kpi-label">Avg Cost per Active Seat</div><div class="kpi-value">$166/mo</div><div class="kpi-sub">4.4x spread, top to bottom</div></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-title">Seat Spend &amp; Utilization by Department</div><div class="chart-subtitle">Where seats are bought vs how much they are used</div><div class="chart-container short"><canvas id="seatByDept"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">License Spend by Vendor</div><div class="chart-subtitle">Per-seat subscriptions only</div><div class="chart-container short"><canvas id="seatByVendor"></canvas></div></div>
+      </div>
+      <div class="chart-card" style="margin-bottom:16px;"><table class="findings-table"><thead><tr><th>Finding</th><th>Opportunity</th><th>Impact</th><th>Fix Effort</th></tr></thead><tbody>
+        <tr><td><div class="finding-title">Inactive and zero-usage seats</div><div class="finding-desc">47 seats never logged in or sat idle 60+ days, concentrated in Sales (14) and Legal &amp; Ops (10). Deprovision or reassign.</div></td><td style="font-weight:600;">$6,100/mo</td><td><span class="impact-badge impact-high">High</span></td><td><span class="difficulty-badge">1 week</span></td></tr>
+        <tr><td><div class="finding-title">Overlapping assistants</div><div class="finding-desc">52 users carry two or more overlapping tools (for example ChatGPT Enterprise plus Gemini plus Copilot). Consolidate to one primary per role.</div></td><td style="font-weight:600;">$4,300/mo</td><td><span class="impact-badge impact-high">High</span></td><td><span class="difficulty-badge">2 weeks</span></td></tr>
+        <tr><td><div class="finding-title">Over-tiered licenses</div><div class="finding-desc">31 Enterprise seats show light, mostly read-only usage that a Team or Pro tier covers. Downgrade without losing access.</div></td><td style="font-weight:600;">$2,800/mo</td><td><span class="impact-badge impact-medium">Medium</span></td><td><span class="difficulty-badge">2 weeks</span></td></tr>
+        <tr><td><div class="finding-title">Prepaid credits under-consumed</div><div class="finding-desc">$8,600 of committed credits are on pace to expire unused this term. Renegotiate the commit or redirect the balance before it lapses.</div></td><td style="font-weight:600;">$8,600 one-time</td><td><span class="impact-badge impact-medium">Medium</span></td><td><span class="difficulty-badge">3 weeks</span></td></tr>
+      </tbody></table></div>
+      <div class="chart-title" style="margin-bottom:12px;">Seat &amp; License Playbook</div>
+      <div class="rec-card"><div class="rec-num">1</div><div><div class="rec-title">Reclaim inactive seats</div><div class="rec-desc">Pull the 47 zero-usage seats with a 30-day self-serve reactivation window so nobody who needs a tool loses it.</div></div><div><div class="rec-savings">$6,100</div><div class="rec-savings-label">/month opportunity</div></div><div class="rec-effort"><span class="difficulty-badge">1 week</span></div></div>
+      <div class="rec-card"><div class="rec-num">2</div><div><div class="rec-title">Consolidate overlapping tools</div><div class="rec-desc">Set one primary assistant per role and keep specialty tools only where they earn their seat. Targets the 52 double-covered users.</div></div><div><div class="rec-savings">$4,300</div><div class="rec-savings-label">/month opportunity</div></div><div class="rec-effort"><span class="difficulty-badge">2 weeks</span></div></div>
+      <div class="rec-card"><div class="rec-num">3</div><div><div class="rec-title">Right-tier light users</div><div class="rec-desc">Move the 31 light-usage Enterprise seats to a tier matched to how they actually use the tool.</div></div><div><div class="rec-savings">$2,800</div><div class="rec-savings-label">/month opportunity</div></div><div class="rec-effort"><span class="difficulty-badge">2 weeks</span></div></div>
+      <div class="rec-card"><div class="rec-num">4</div><div><div class="rec-title">Recover prepaid credits at risk</div><div class="rec-desc">Flag the $8,600 on pace to expire and either redirect usage to draw it down or renegotiate the commitment at renewal.</div></div><div><div class="rec-savings onetime">$8,600</div><div class="rec-savings-label">one-time recovery</div></div><div class="rec-effort"><span class="difficulty-badge">3 weeks</span></div></div>
+      <div class="callout"><span class="callout-label" style="color:var(--cyan)">Insight:</span><span style="color:var(--text-secondary)">Seat waste is invisible on a usage dashboard. A license bills the same whether the holder opens the tool daily or never, so it never appears as a spike. Brixo catches it by reconciling the seat roster against actual logins and activity, the same way it reconciles API spend against tickets.</span></div>
+    </div>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="section" id="s4">
+    <div class="section-header" onclick="toggleSection('s4')"><div class="section-num">4</div><div class="section-title">Usage &amp; Agent Optimization</div><div class="section-chevron">&#8964;</div></div>
+    <div class="section-summary"><ul><li><strong>$18,400/month</strong> appears optimizable inside engineering usage without reducing velocity. Combined with the seat savings above, total identified opportunity is <strong>$31,600/month</strong>.</li><li>These patterns are not framed as proven "zero value"; they are spend areas where logs suggest repeated context loading, overpowered model selection, duplicate work, idle agents, or cache misses.</li><li>Fixes can either reduce the bill or redirect spend toward higher-value engineering work.</li></ul></div>
+    <div class="section-body">
+      <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr);"><div class="kpi-card"><div class="kpi-label">Engineering Usage Opportunity</div><div class="kpi-value" style="color:var(--green)">$18,400</div><div class="kpi-sub">/month, candidate savings or reinvestment</div></div><div class="kpi-card"><div class="kpi-label">Combined Monthly Opportunity</div><div class="kpi-value" style="color:var(--green)">$31,600</div><div class="kpi-sub">usage $18.4K + seats $13.2K</div></div><div class="kpi-card"><div class="kpi-label">Low-Confidence / Untracked Usage</div><div class="kpi-value" style="color:var(--red)">34.8%</div><div class="kpi-sub">needs validation before assigning value</div></div></div>
+      <div class="chart-card" style="margin-bottom:16px;"><table class="findings-table"><thead><tr><th>Finding</th><th>Monthly Opportunity</th><th>Impact</th><th>Fix Effort</th></tr></thead><tbody><tr><td><div class="finding-title">Repeated context reloads</div><div class="finding-desc">Sessions restarted mid-task rebuilt large context windows. The pattern suggests workflow fragmentation and avoidable re-reading.</div></td><td style="font-weight:600;">$6,200/mo</td><td><span class="impact-badge impact-high">High</span></td><td><span class="difficulty-badge">1 week</span></td></tr><tr><td><div class="finding-title">Premium models on commodity tasks</div><div class="finding-desc">38% of premium-model requests are formatting, linting, or boilerplate generation. Model routing can reserve premium models for tasks where they change the result.</div></td><td style="font-weight:600;">$4,800/mo</td><td><span class="impact-badge impact-high">High</span></td><td><span class="difficulty-badge">2 weeks</span></td></tr><tr><td><div class="finding-title">Duplicate prompt patterns across teams</div><div class="finding-desc">Repeated prompt patterns appear across teams, especially for tests, code explanation, and TypeScript conversion. A shared library can reduce reinvention.</div></td><td style="font-weight:600;">$3,100/mo</td><td><span class="impact-badge impact-medium">Medium</span></td><td><span class="difficulty-badge">2 weeks</span></td></tr><tr><td><div class="finding-title">Idle agents continuing to run</div><div class="finding-desc">Two CI/CD agents poll continuously with limited actionable output during 40%+ of active time. Add idle detection and output validation.</div></td><td style="font-weight:600;">$2,400/mo</td><td><span class="impact-badge impact-medium">Medium</span></td><td><span class="difficulty-badge">1 week</span></td></tr><tr><td><div class="finding-title">Cache misses inflating read costs</div><div class="finding-desc">Uncached-to-cached ratio is 4.2:1 versus a benchmark below 2:1. Cache configuration review can reduce repeated context reads.</div></td><td style="font-weight:600;">$1,900/mo</td><td><span class="impact-badge impact-medium">Medium</span></td><td><span class="difficulty-badge">3 weeks</span></td></tr></tbody></table></div>
+      <div class="chart-title" style="margin-bottom:12px;">Optimization Playbook</div>
+      <div class="rec-card"><div class="rec-num">1</div><div><div class="rec-title">Session continuity guidelines</div><div class="rec-desc">Help teams continue sessions instead of restarting. A one-page context-management guide addresses the largest avoidable re-read pattern.</div></div><div><div class="rec-savings">$6,200</div><div class="rec-savings-label">/month opportunity</div></div><div class="rec-effort"><span class="difficulty-badge">1 week</span></div></div>
+      <div class="rec-card"><div class="rec-num">2</div><div><div class="rec-title">Model routing defaults</div><div class="rec-desc">Route formatting, linting, and boilerplate work to cost-efficient models. Reserve premium models for tasks requiring complex reasoning.</div></div><div><div class="rec-savings">$4,800</div><div class="rec-savings-label">/month opportunity</div></div><div class="rec-effort"><span class="difficulty-badge">2 weeks</span></div></div>
+      <div class="rec-card"><div class="rec-num">3</div><div><div class="rec-title">Shared prompt and workflow library</div><div class="rec-desc">Centralize common workflows and agent instructions so teams do not repeatedly recreate the same patterns.</div></div><div><div class="rec-savings">$3,100</div><div class="rec-savings-label">/month opportunity</div></div><div class="rec-effort"><span class="difficulty-badge">2 weeks</span></div></div>
+      <div class="rec-card"><div class="rec-num">4</div><div><div class="rec-title">Agent idle detection</div><div class="rec-desc">Shut down polling loops after 10 minutes of no actionable output and require output validation for automated agents.</div></div><div><div class="rec-savings">$2,400</div><div class="rec-savings-label">/month opportunity</div></div><div class="rec-effort"><span class="difficulty-badge">1 week</span></div></div>
+    </div>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="section" id="s5">
+    <div class="section-header" onclick="toggleSection('s5')"><div class="section-num">5</div><div class="section-title">Engineering Activity Attribution</div><div class="section-chevron">&#8964;</div></div>
+    <div class="section-summary"><ul><li><strong>72%</strong> of engineering AI spend maps to specific tickets, projects, or repositories.</li><li>The chart below classifies spend by engineering activity, not by final business outcome.</li><li>Connecting OKRs, support data, revenue systems, and CI/CD would make the value attribution stronger.</li></ul></div>
+    <div class="section-body"><div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr);"><div class="kpi-card"><div class="kpi-label">AI-Assisted Features</div><div class="kpi-value">49</div><div class="kpi-sub">feature size not normalized</div></div><div class="kpi-card"><div class="kpi-label">AI-Assisted Bug Fixes</div><div class="kpi-value">89</div><div class="kpi-sub">avg $320 AI spend per fix</div></div><div class="kpi-card"><div class="kpi-label">Project with Strongest Signal</div><div class="kpi-value">Auth v2</div><div class="kpi-sub">tracked spend plus linked revenue signal</div></div><div class="kpi-card"><div class="kpi-label">Project Needing Review</div><div class="kpi-value">Infra Mig.</div><div class="kpi-sub">high spend, outcome still pending</div></div></div><div class="chart-grid"><div class="chart-card"><div class="chart-title">Spend by Engineering Activity</div><div class="chart-subtitle">AI spend mapped to ticket categories via Linear</div><div class="chart-container short"><canvas id="spendByCategory"></canvas></div></div><div class="chart-card"><div class="chart-title">AI Spend per Ticket Distribution</div><div class="chart-subtitle">Completed tickets, sorted by AI spend</div><div class="chart-container short"><canvas id="costPerTicket"></canvas></div></div></div><div class="callout"><span class="callout-label" style="color:var(--cyan)">Attribution Gap:</span><span style="color:var(--text-secondary)">28% of engineering spend ($35,655) occurred outside tracked workflows, and non-engineering usage is even less attributed today. Connecting additional systems (OKRs, Slack, CI/CD, support, and revenue tools) gives more spend a clear owner and makes the value story more defensible.</span></div></div>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="section" id="s6">
+    <div class="section-header" onclick="toggleSection('s6')"><div class="section-num">6</div><div class="section-title">Spend Alignment</div><div class="section-chevron">&#8964;</div></div>
+    <div class="section-summary"><ul><li>This section shows where engineering AI spend is happening by work type.</li><li>High debugging and rework spend may indicate quality debt rather than an AI cost problem.</li><li>Use this view as a leadership prompt: should more AI spend support feature delivery, or is it intentionally being used to pay down reliability and quality issues?</li></ul></div>
+    <div class="section-body"><div class="alignment-grid"><div class="alignment-card"><div class="alignment-pct" style="color:var(--accent-light)">68%</div><div class="alignment-label">Feature Development</div><div class="alignment-detail">$86,590 spend. Supports Q2 growth work.</div><div class="alignment-bar"><div class="alignment-bar-fill" style="width:68%; background: var(--accent);"></div></div></div><div class="alignment-card"><div class="alignment-pct" style="color:var(--amber)">22%</div><div class="alignment-label">Debugging &amp; Rework</div><div class="alignment-detail">$28,015 spend. 7pts above benchmark. Signals quality debt.</div><div class="alignment-bar"><div class="alignment-bar-fill" style="width:22%; background: var(--amber);"></div></div></div><div class="alignment-card"><div class="alignment-pct" style="color:var(--text-muted)">10%</div><div class="alignment-label">Unclassified</div><div class="alignment-detail">$12,734 needs additional context.</div><div class="alignment-bar"><div class="alignment-bar-fill" style="width:10%; background: var(--text-muted);"></div></div></div></div><div class="chart-grid" style="margin-top:14px;"><div class="chart-card full"><div class="chart-title">Spend Alignment Over Time</div><div class="chart-subtitle">Weekly breakdown by engineering work type</div><div class="chart-container"><canvas id="intentTimeline"></canvas></div></div></div><div class="callout" style="margin-top:14px;"><span class="callout-label" style="color:var(--amber)">Strategic Question:</span><span style="color:var(--text-secondary)">Is the debugging ratio a symptom of technical debt? If so, reducing upstream defects could redirect roughly $5,600/month from rework toward feature development without increasing total AI spend.</span></div></div>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="section" id="s7">
+    <div class="section-header" onclick="toggleSection('s7')"><div class="section-num" style="background:var(--cyan)">+</div><div class="section-title">Improve Attribution Coverage</div><div class="section-chevron">&#8964;</div></div>
+    <div class="section-summary"><ul><li>This report uses provider invoices, seat rosters, CLI logs, git data, and available ticket metadata.</li><li>Additional integrations improve attribution coverage and reduce the amount of spend labeled unclassified, across all AI usage.</li><li>The strongest CTA: connect systems that turn "AI spend" into an owner, a workflow, and a decision.</li></ul></div>
+    <div class="section-body"><div class="connect-grid"><div class="connect-card" onclick="openModal('billing')"><div class="connect-badge">Ledger</div><div class="connect-icon">&#128179;</div><div class="connect-title">Finance &amp; Billing Capture</div><div class="connect-desc">Pull seat invoices, prepaid credit balances, and usage bills directly, including providers with no usable API, through read-only browser capture.</div><ul class="connect-items"><li>Seat counts vs active users</li><li>Prepaid credit burn and expiry</li><li>Every provider in one ledger</li><li>Spend captured where no API exists</li></ul></div><div class="connect-card" onclick="openModal('identity')"><div class="connect-badge">Governance</div><div class="connect-icon">&#128100;</div><div class="connect-title">Identity &amp; Seat Roster</div><div class="connect-desc">Connect SSO or your HRIS to map every seat to a person, role, and department, and to flag inactive or offboarded holders.</div><ul class="connect-items"><li>Zero-usage and offboarded seats</li><li>Department and manager rollups</li><li>Seat utilization by role</li><li>Per-team license budgets</li></ul></div><div class="connect-card" onclick="openModal('ticketing')"><div class="connect-badge">Attribution</div><div class="connect-icon">&#128203;</div><div class="connect-title">Ticketing System</div><div class="connect-desc">Connect Linear, Jira, or Asana to tie AI spend to shipped features, resolved bugs, and active initiatives.</div><ul class="connect-items"><li>Cost per feature / bug fix / initiative</li><li>AI spend by epic and sprint</li><li>Tickets consuming disproportionate budget</li><li>Feature vs. maintenance spend ratio</li></ul></div><div class="connect-card" onclick="openModal('okr')"><div class="connect-badge">Strategy</div><div class="connect-icon">&#127919;</div><div class="connect-title">OKR / Goal Tracking</div><div class="connect-desc">Connect OKRs to test whether AI spend lines up with stated company priorities.</div><ul class="connect-items"><li>AI spend by objective / key result</li><li>Spend vs. priority weighting</li><li>Strategic initiative tracking</li><li>Quarterly justification reports</li></ul></div><div class="connect-card" onclick="openModal('cicd')"><div class="connect-badge">Automation</div><div class="connect-icon">&#128640;</div><div class="connect-title">CI/CD Pipeline</div><div class="connect-desc">Track automated AI agent costs within pipelines and separate human-directed usage from machine-initiated spend.</div><ul class="connect-items"><li>Per-pipeline AI cost attribution</li><li>Agent output validation</li><li>Automated vs. manual AI split</li><li>Build-triggered consumption trends</li></ul></div></div></div>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="section" id="s8">
+    <div class="section-header" onclick="toggleSection('s8')"><div class="section-num" style="background:var(--green)">&#8594;</div><div class="section-title">Next Steps</div><div class="section-chevron">&#8964;</div></div>
+    <div class="section-summary"><ul><li>The immediate actions below address up to $31,600/month of candidate savings across seats and usage, plus $8,600 in prepaid credits at risk.</li><li>The pilot turns this one-time audit into an always-on back office that keeps every AI dollar accounted for, governed, and working harder.</li></ul></div>
+    <div class="section-body"><div class="next-grid"><div class="next-card"><div class="next-label" style="color:var(--green)">Immediate Actions (Week 1-2)</div><div class="next-list">1. Reclaim the 47 inactive seats with a 30-day reactivation window<br>2. Consolidate overlapping assistants to one primary per role<br>3. Flag the $8,600 in prepaid credits at risk before renewal<br>4. Distribute session continuity guidelines to engineering<br>5. Configure model routing defaults for commodity coding tasks</div></div><div class="next-card"><div class="next-label" style="color:var(--accent-light)">Activate your dedicated Back Office Team:</div><div class="next-list"><strong>Bookkeeper:</strong> keep the ledger and seat roster reconciled to actual usage<br><strong>Controller:</strong> enforce per-team budgets and monitor new tool spend before it bills<br><strong>Analyst:</strong> forecast burn across all AI usage and flag the budgets that are at risk<br><strong>Auditor:</strong> hunt idle seats, overlapping tools, model overshoot, and idle agents continuously</div></div></div><div class="platform-cta"><h3>This report is a snapshot of your AI usage. Brixo turns it into a live back office.</h3><p>Continuous monitoring tracks every AI dollar through seats, usage, agents, and credits, reconciles it against actual activity, and flags avoidable cost before it becomes a budget surprise.</p><a class="platform-cta-btn" href="https://zcal.co/t/brixo/45-min" target="_blank" rel="noopener">Book a call with Brixo</a><div class="platform-cta-features"><div class="platform-cta-feature">Real-time spend visibility</div><div class="platform-cta-feature">Seat reclaim</div><div class="platform-cta-feature">Budget controls</div><div class="platform-cta-feature">Browser billing capture</div><div class="platform-cta-feature">Continuous auditor</div><div class="platform-cta-feature">Weekly reporting</div></div></div></div>
+  </div>
+
+  <div class="report-footer"><div class="footer-brand"><svg viewBox="0 0 120 100" width="20" height="17" xmlns="http://www.w3.org/2000/svg" style="display:block;"><defs><pattern id="ftsp" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect x="0.7" width="2.4" height="4.5" fill="#F472B6" opacity="0.9"/></pattern><pattern id="ftso" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect y="0.7" width="4.5" height="2.4" fill="#FFA375" opacity="0.9"/></pattern><pattern id="ftsg" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect y="0.7" width="4.5" height="2.4" fill="#6EE7B7" opacity="0.85"/></pattern><pattern id="ftsp2" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect x="0.7" width="2.4" height="4.5" fill="#F472B6" opacity="0.7"/></pattern></defs><polygon points="39.4,21 55,30 39.4,39 23.8,30" fill="url(#ftso)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="70.6,21 86.2,30 70.6,39 55,30" fill="url(#ftso)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="23.8,48 23.8,30 39.4,39 39.4,57" fill="url(#ftsp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 55,30 39.4,39 39.4,57" fill="url(#ftsp2)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 55,30 70.6,39 70.6,57" fill="url(#ftsp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="86.2,48 86.2,30 70.6,39 70.6,57" fill="url(#ftsp2)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 70.6,57 55,66 39.4,57" fill="url(#ftso)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="39.4,75 39.4,57 55,66 55,84" fill="url(#ftsp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="70.6,75 70.6,57 55,66 55,84" fill="url(#ftsg)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/></svg><span>AI Spend Audit &amp; Analyst by Brixo</span></div><div>Prepared for Sample Corp &middot; v1.023 &middot; June 2026</div></div>
+</div>
+
+<script>
+function toggleTheme(){const html=document.documentElement;const btn=document.getElementById('themeBtn');if(html.getAttribute('data-theme')==='light'){html.removeAttribute('data-theme');btn.innerHTML='&#9789;';}else{html.setAttribute('data-theme','light');btn.innerHTML='&#9788;';}rebuildCharts();}
+function toggleSidebar(){document.body.classList.toggle('sidebar-closed');}
+function toggleSection(id){document.getElementById(id).classList.toggle('collapsed');}
+function navTo(e,id){e.preventDefault();document.getElementById(id).scrollIntoView({behavior:'smooth'});document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.querySelector(`.nav-item[data-section="${id}"]`).classList.add('active');document.getElementById(id).classList.remove('collapsed');}
+const sectionIds=['s1','s2','s3','s4','s5','s6','s7','s8'];window.addEventListener('scroll',()=>{let current=sectionIds[0];for(const id of sectionIds){const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=80)current=id;}document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const active=document.querySelector(`.nav-item[data-section="${current}"]`);if(active)active.classList.add('active');});
+let charts={};function getChartColors(){const s=getComputedStyle(document.documentElement);return{text:s.getPropertyValue('--text-secondary').trim(),grid:s.getPropertyValue('--border-subtle').trim(),accent:s.getPropertyValue('--accent').trim(),accentLight:s.getPropertyValue('--accent-light').trim(),red:s.getPropertyValue('--red').trim(),green:s.getPropertyValue('--green').trim(),amber:s.getPropertyValue('--amber').trim(),cyan:s.getPropertyValue('--cyan').trim(),muted:s.getPropertyValue('--text-muted').trim(),surface:s.getPropertyValue('--surface').trim()};}
+function buildCharts(){const c=getChartColors();Chart.defaults.color=c.text;Chart.defaults.borderColor=c.grid;Chart.defaults.font.family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif";Chart.defaults.font.size=11;Chart.defaults.plugins.legend.labels.usePointStyle=true;Chart.defaults.plugins.legend.labels.pointStyle='circle';Chart.defaults.plugins.legend.labels.padding=14;Chart.defaults.elements.point.radius=0;Chart.defaults.elements.point.hoverRadius=4;
+const days=Array.from({length:90},(_,i)=>{const d=new Date(2026,1,1);d.setDate(d.getDate()+i);return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});});const spend=Array.from({length:90},(_,i)=>{const base=2400+Math.sin(i*0.15)*360+(i*6.5);const noise=(Math.random()-0.5)*520;const wd=new Date(2026,1,1+i).getDay();const wk=(wd===0||wd===6)?0.35:1;return Math.max(400,Math.round((base+noise)*wk));});const features=Array.from({length:90},(_,i)=>Math.round(49*(1-Math.exp(-i/30))));charts.timeline=new Chart(document.getElementById('spendTimeline'),{type:'line',data:{labels:days,datasets:[{label:'Daily Spend ($)',data:spend,borderColor:c.accent,backgroundColor:c.accent+'14',fill:true,tension:0.3,borderWidth:2,yAxisID:'y'},{label:'Features Shipped (cumulative)',data:features,borderColor:c.green,backgroundColor:'transparent',borderWidth:2,borderDash:[5,3],tension:0.3,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:10}},y:{position:'left',grid:{color:c.grid},ticks:{callback:v=>'$'+v.toLocaleString()}},y1:{position:'right',grid:{display:false},ticks:{callback:v=>v+' shipped'}}}}});
+charts.channel=new Chart(document.getElementById('spendByChannel'),{type:'doughnut',data:{labels:['API & Metered Usage','Seat Licenses','Autonomous Agents','Prepaid Credits'],datasets:[{data:[96800,90300,14800,12500],backgroundColor:[c.accent,c.cyan,c.amber,c.muted],borderColor:c.surface,borderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'right',labels:{font:{size:11}}}}}});
+charts.vendor=new Chart(document.getElementById('spendByVendor'),{type:'bar',data:{labels:['Anthropic','OpenAI','Google','Microsoft / Copilot','Cursor','Perplexity','Other'],datasets:[{label:'Spend ($)',data:[61000,58000,24000,22000,22100,9400,17900],backgroundColor:[c.accent,c.accentLight,c.cyan,'#3b82f6','#a78bfa',c.green,c.muted],borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:c.grid},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}},y:{grid:{display:false}}}}});
+charts.team=new Chart(document.getElementById('spendByTeam'),{type:'bar',data:{labels:['Platform','Frontend','Data/ML','DevOps','Mobile'],datasets:[{label:'Spend ($)',data:[42800,34200,26100,14800,9440],backgroundColor:[c.accent,c.accentLight,'#a78bfa',c.cyan,c.green],borderRadius:5,yAxisID:'y'},{label:'Tracked Delivery Index',data:[92,88,64,38,51],type:'line',borderColor:c.amber,backgroundColor:'transparent',borderWidth:2,pointRadius:4,pointBackgroundColor:c.amber,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{x:{grid:{display:false}},y:{position:'left',grid:{color:c.grid},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}},y1:{position:'right',grid:{display:false},ticks:{callback:v=>v},min:0,max:100}}}});
+charts.tool=new Chart(document.getElementById('spendByTool'),{type:'bar',data:{labels:['Claude Code','Codex','Cursor','Copilot','API Direct','Internal Agents'],datasets:[{data:[41200,28400,22100,15300,12800,7540],backgroundColor:[c.accent,c.accentLight,'#a78bfa',c.cyan,c.green,c.amber],borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:c.grid},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}},y:{grid:{display:false}}}}});
+charts.seatDept=new Chart(document.getElementById('seatByDept'),{type:'bar',data:{labels:['Engineering','Product','Marketing','Sales','Customer Success','Legal & Ops'],datasets:[{label:'Seat Spend ($)',data:[37400,13200,11800,14600,8900,4400],backgroundColor:[c.cyan,c.accent,c.accentLight,c.amber,'#a78bfa',c.muted],borderRadius:5,yAxisID:'y'},{label:'Utilization (%)',data:[88,61,54,39,47,26],type:'line',borderColor:c.red,backgroundColor:'transparent',borderWidth:2,pointRadius:4,pointBackgroundColor:c.red,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{x:{grid:{display:false}},y:{position:'left',grid:{color:c.grid},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}},y1:{position:'right',grid:{display:false},ticks:{callback:v=>v+'%'},min:0,max:100}}}});
+charts.seatVendor=new Chart(document.getElementById('seatByVendor'),{type:'bar',data:{labels:['ChatGPT Enterprise','Cursor','GitHub Copilot','Claude Team/Ent','Gemini for Workspace','Perplexity Ent','Notion AI + Otter'],datasets:[{data:[24800,22100,16600,10200,8400,4600,3600],backgroundColor:[c.accentLight,'#a78bfa',c.cyan,c.accent,c.green,c.amber,c.muted],borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:c.grid},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}},y:{grid:{display:false}}}}});
+charts.category=new Chart(document.getElementById('spendByCategory'),{type:'doughnut',data:{labels:['Feature Delivery','Bug Resolution','Refactoring','Documentation','Testing','Exploration'],datasets:[{data:[45200,22800,14600,9200,7100,5640],backgroundColor:[c.accent,c.red,c.amber,c.cyan,c.green,c.muted],borderColor:c.surface,borderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'right',labels:{font:{size:11}}}}}});
+const tc=Array.from({length:40},(_,i)=>Math.round(50+Math.pow(i,1.8)*2+Math.random()*80)).sort((a,b)=>b-a);charts.ticket=new Chart(document.getElementById('costPerTicket'),{type:'bar',data:{labels:tc.map((_,i)=>'T-'+(i+1)),datasets:[{data:tc,backgroundColor:tc.map(v=>v>300?c.red:v>150?c.amber:c.green),borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:10,font:{size:10}}},y:{grid:{color:c.grid},ticks:{callback:v=>'$'+v}}}}});
+const weeks=['W1 Feb','W2 Feb','W3 Feb','W4 Feb','W1 Mar','W2 Mar','W3 Mar','W4 Mar','W1 Apr','W2 Apr','W3 Apr','W4 Apr','W5 Apr'];charts.intent=new Chart(document.getElementById('intentTimeline'),{type:'line',data:{labels:weeks,datasets:[{label:'Feature Delivery',data:[6200,6800,7100,6400,7200,7800,6900,7400,7100,7600,7200,6800,7100],borderColor:c.accent,backgroundColor:c.accent+'26',fill:true,tension:0.3,borderWidth:2},{label:'Debugging & Rework',data:[2100,1800,2400,2200,1900,2600,2100,2300,1800,2000,2400,2200,1900],borderColor:c.red,backgroundColor:c.red+'1f',fill:true,tension:0.3,borderWidth:2},{label:'Unclassified',data:[900,1100,800,1200,1000,900,1100,800,1300,1000,900,1100,1000],borderColor:c.muted,backgroundColor:c.muted+'1a',fill:true,tension:0.3,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{x:{grid:{display:false}},y:{stacked:true,grid:{color:c.grid},ticks:{callback:v=>'$'+(v/1000).toFixed(1)+'k'}}}}});}
+function rebuildCharts(){Object.values(charts).forEach(ch=>ch.destroy());charts={};buildCharts();}buildCharts();
+const BRIXO_FAB_LOGO='<svg viewBox="0 0 120 100" width="30" height="25" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="fbsp" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect x="0.7" width="2.4" height="4.5" fill="#F472B6" opacity="0.9"/></pattern><pattern id="fbso" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect y="0.7" width="4.5" height="2.4" fill="#FFA375" opacity="0.9"/></pattern><pattern id="fbsg" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect y="0.7" width="4.5" height="2.4" fill="#6EE7B7" opacity="0.85"/></pattern><pattern id="fbsp2" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect x="0.7" width="2.4" height="4.5" fill="#F472B6" opacity="0.7"/></pattern></defs><polygon points="39.4,21 55,30 39.4,39 23.8,30" fill="url(#fbso)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="70.6,21 86.2,30 70.6,39 55,30" fill="url(#fbso)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="23.8,48 23.8,30 39.4,39 39.4,57" fill="url(#fbsp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 55,30 39.4,39 39.4,57" fill="url(#fbsp2)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 55,30 70.6,39 70.6,57" fill="url(#fbsp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="86.2,48 86.2,30 70.6,39 70.6,57" fill="url(#fbsp2)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 70.6,57 55,66 39.4,57" fill="url(#fbso)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="39.4,75 39.4,57 55,66 55,84" fill="url(#fbsp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="70.6,75 70.6,57 55,66 55,84" fill="url(#fbsg)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+function toggleChat(){const drawer=document.getElementById('chatDrawer');const fab=document.getElementById('chatFab');const isOpen=drawer.classList.toggle('open');fab.classList.toggle('open',isOpen);const logo=fab.querySelector('.chat-fab-logo');logo.innerHTML=isOpen?'&#10005;':BRIXO_FAB_LOGO;if(isOpen){setTimeout(()=>{document.getElementById('chatInput').focus();},300);}}
+function chatSuggestion(text){const input=document.getElementById('chatInput');input.value=text;input.focus();}
+function sendChat(){const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;const body=document.querySelector('.chat-drawer-body');const u=document.createElement('div');u.className='chat-msg user';u.textContent=text;body.appendChild(u);input.value='';body.scrollTop=body.scrollHeight;setTimeout(function(){const a=document.createElement('div');a.className='chat-msg agent';a.textContent='Activate your plan to start chatting with your agent team.';body.appendChild(a);body.scrollTop=body.scrollHeight;},400);}
+</script>
+
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" title="Chat with Brixo's Spend Analyst"><div class="chat-fab-logo"><svg viewBox="0 0 120 100" width="30" height="25" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="fbsp" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect x="0.7" width="2.4" height="4.5" fill="#F472B6" opacity="0.9"/></pattern><pattern id="fbso" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect y="0.7" width="4.5" height="2.4" fill="#FFA375" opacity="0.9"/></pattern><pattern id="fbsg" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect y="0.7" width="4.5" height="2.4" fill="#6EE7B7" opacity="0.85"/></pattern><pattern id="fbsp2" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect x="0.7" width="2.4" height="4.5" fill="#F472B6" opacity="0.7"/></pattern></defs><polygon points="39.4,21 55,30 39.4,39 23.8,30" fill="url(#fbso)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="70.6,21 86.2,30 70.6,39 55,30" fill="url(#fbso)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="23.8,48 23.8,30 39.4,39 39.4,57" fill="url(#fbsp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 55,30 39.4,39 39.4,57" fill="url(#fbsp2)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 55,30 70.6,39 70.6,57" fill="url(#fbsp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="86.2,48 86.2,30 70.6,39 70.6,57" fill="url(#fbsp2)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 70.6,57 55,66 39.4,57" fill="url(#fbso)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="39.4,75 39.4,57 55,66 55,84" fill="url(#fbsp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="70.6,75 70.6,57 55,66 55,84" fill="url(#fbsg)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/></svg></div><div class="chat-fab-pulse"></div></button>
+<div class="chat-drawer" id="chatDrawer"><div class="chat-drawer-header"><div class="chat-drawer-avatar">B</div><div class="chat-drawer-info"><div class="chat-drawer-title">Brixo Spend Analyst</div><div class="chat-drawer-status">Online</div></div></div><div class="chat-drawer-body"><div class="chat-msg agent">Hey! I can walk you through your AI spend, seat waste, optimization opportunities, and attribution coverage in this report. What would you like to explore?</div><div class="chat-suggestions"><button class="chat-suggestion" onclick="chatSuggestion('Where can we cut without hurting engineering?')">Cut without hurting eng?</button><button class="chat-suggestion" onclick="chatSuggestion('How many seats are we wasting?')">Wasted seats?</button><button class="chat-suggestion" onclick="chatSuggestion('What are the quickest wins to reduce avoidable cost?')">Quick wins</button><button class="chat-suggestion" onclick="chatSuggestion('What would improve attribution coverage?')">Improve attribution</button></div></div><div class="chat-drawer-input"><input type="text" id="chatInput" placeholder="Ask about your AI spend..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendChat();}" /><button type="button" title="Send" onclick="sendChat()">&#8593;</button></div></div>
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()"><div class="modal" id="modalContent"></div></div>
+<script>
+const modalData={billing:{title:'Finance &amp; Billing Capture',badge:'Ledger',badgeColor:'var(--accent-light)',badgeBg:'var(--accent-dim)',metrics:[{value:'11',label:'Providers with no usable API'},{value:'$90,300',label:'Seat spend captured via browser'},{value:'$8,600',label:'Prepaid credits flagged at risk'}],table:{headers:['Provider','Channel','Capture Method','Spend (90d)','Status'],rows:[['ChatGPT Enterprise','Seats','Browser capture','$24,800','<span style="color:var(--green)">Reconciled</span>'],['Cursor','Seats','API + browser','$22,100','<span style="color:var(--green)">Reconciled</span>'],['Anthropic','Usage + seats','API','$61,000','<span style="color:var(--green)">Reconciled</span>'],['Perplexity Enterprise','Seats','Browser capture','$5,200','<span style="color:var(--amber)">Seat audit due</span>'],['Prepaid credit pool','Credits','Browser capture','$12,500','<span style="color:var(--red)">$8,600 at risk</span>']]},note:'Brixo captures billing directly, including providers that expose no clean API, the Plaid for AI costs approach. Every door of spend lands in one ledger reconciled against actual usage.'},identity:{title:'Identity &amp; Seat Roster',badge:'Governance',badgeColor:'var(--pink)',badgeBg:'rgba(236,72,153,0.15)',metrics:[{value:'$166',label:'Avg spend per active seat/mo'},{value:'47',label:'Zero-usage seats'},{value:'4.4x',label:'Spread between top/bottom users'}],table:{headers:['Department','AI Seats','Seat Spend/mo','Zero-Usage','Utilization'],rows:[['Engineering','86','$12,470','6','<span style="color:var(--green)">88%</span>'],['Product','22','$4,400','3','<span style="color:var(--amber)">61%</span>'],['Marketing','28','$3,930','5','<span style="color:var(--amber)">54%</span>'],['Sales','41','$4,870','14','<span style="color:var(--red)">39%</span>'],['Customer Success','33','$2,970','9','<span style="color:var(--amber)">47%</span>'],['Legal & Ops','18','$1,470','10','<span style="color:var(--red)">26%</span>']]},note:'Connecting SSO or your HRIS maps every seat to a person and department, so inactive and offboarded seats surface automatically and license budgets can be enforced per team.'},ticketing:{title:'Ticketing &amp; Project Management',badge:'Attribution',badgeColor:'var(--green)',badgeBg:'var(--green-dim)',metrics:[{value:'$4,280',label:'Avg AI spend per sprint'},{value:'34%',label:'Unattributed to tickets'},{value:'2.1x',label:'Cost variance across teams'}],table:{headers:['Team / Project','AI Spend (30d)','Tickets Closed','Cost per Ticket','Trend'],rows:[['Platform Engineering','$12,400','89','$139','<span style="color:var(--green)">-8%</span>'],['Data Pipeline','$8,900','34','$262','<span style="color:var(--red)">+22%</span>'],['Frontend UX','$3,100','62','$50','<span style="color:var(--green)">-3%</span>'],['ML Ops','$15,700','28','$561','<span style="color:var(--red)">+41%</span>'],['Customer Success','$2,300','118','$19','<span style="color:var(--text-muted)">0%</span>']]},note:'Connecting your project management tool lets Brixo attribute AI spend to specific tickets, epics, and projects.'},okr:{title:'OKR &amp; Goal Tracking',badge:'Alignment',badgeColor:'var(--accent-light)',badgeBg:'var(--accent-dim)',metrics:[{value:'62%',label:'Spend aligned to OKRs'},{value:'$18.2K',label:'Unclassified AI spend monthly'},{value:'3 of 8',label:'OKRs with strong AI signal'}],table:{headers:['Objective','AI Spend','Progress','Signal','Status'],rows:[['Reduce time-to-deploy by 40%','$9,200','78%','Strong','<span style="color:var(--green)">On Track</span>'],['Launch self-serve analytics','$14,100','35%','Unclear','<span style="color:var(--amber)">At Risk</span>'],['Cut support ticket volume 25%','$3,800','92%','Strong','<span style="color:var(--green)">On Track</span>'],['Migrate to new data platform','$22,400','18%','Needs review','<span style="color:var(--red)">Off Track</span>']]},note:'Brixo maps AI spend to stated goals so leadership can assess whether usage matches priorities.'},cicd:{title:'CI/CD Pipeline',badge:'Automation',badgeColor:'var(--cyan)',badgeBg:'var(--cyan-dim)',metrics:[{value:'$6,740',label:'Monthly pipeline AI spend'},{value:'43%',label:'From automated agents'},{value:'12x',label:'Cost diff: prod vs staging'}],table:{headers:['Pipeline','AI Calls (30d)','Cost','Avg per Build','Waste Flag'],rows:[['deploy-prod','2,840','$3,200','$4.12','<span style="color:var(--text-muted)">None</span>'],['pr-review-bot','4,120','$1,900','$0.46','<span style="color:var(--amber)">Duplicate calls</span>'],['staging-test-suite','8,300','$890','$0.11','<span style="color:var(--text-muted)">None</span>'],['nightly-retrain','380','$4,800','$12.63','<span style="color:var(--red)">No output validation</span>'],['code-gen-agent','1,600','$2,100','$1.31','<span style="color:var(--amber)">Retry storms</span>']]},note:'Pipeline integrations separate human-directed AI spend from automated agent costs.'}};
+function openModal(type){const d=modalData[type];if(!d)return;let html='<div class="modal-header"><div><div class="modal-title">'+d.title+'</div></div><div style="display:flex;align-items:center;gap:10px;"><span class="modal-badge" style="background:'+d.badgeBg+';color:'+d.badgeColor+';">'+d.badge+'</span><button class="modal-close" onclick="closeModal()">&#10005;</button></div></div>';html+='<div class="modal-section"><div class="modal-section-title">Key Metrics</div><div class="modal-metric-row">';d.metrics.forEach(function(m){html+='<div class="modal-metric"><div class="modal-metric-value">'+m.value+'</div><div class="modal-metric-label">'+m.label+'</div></div>';});html+='</div></div><div class="modal-section"><div class="modal-section-title">Sample Breakdown</div><table class="modal-table"><thead><tr>';d.table.headers.forEach(function(h){html+='<th>'+h+'</th>';});html+='</tr></thead><tbody>';d.table.rows.forEach(function(r){html+='<tr>';r.forEach(function(cell){html+='<td>'+cell+'</td>';});html+='</tr>';});html+='</tbody></table></div><div class="modal-note"><strong>What this unlocks:</strong> '+d.note+'</div><a class="modal-cta" href="https://zcal.co/t/brixo/45-min" target="_blank">Schedule a walkthrough with Brixo</a>';document.getElementById('modalContent').innerHTML=html;document.getElementById('modalOverlay').classList.add('open');}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+</script>
+</body>
+</html>
