@@ -4,6 +4,7 @@ import { ArrowRight, Check } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useState, type ReactNode, type FormEvent } from "react";
 import { siteConfig } from "@/lib/metadata";
+import { submitGetStarted } from "./actions";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -27,6 +28,7 @@ const features = [
 export function GetStartedForm(): ReactNode {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -40,14 +42,17 @@ export function GetStartedForm(): ReactNode {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
-    // Redirect to booking after a short delay so it feels intentional
-    setTimeout(() => {
-      setLoading(false);
+    setError(null);
+    const result = await submitGetStarted(form);
+    setLoading(false);
+    if (result.success) {
       setSubmitted(true);
-    }, 600);
+    } else {
+      setError(result.error ?? "Something went wrong. Please try again.");
+    }
   }
 
   return (
@@ -231,6 +236,10 @@ export function GetStartedForm(): ReactNode {
                     ))}
                   </select>
                 </div>
+
+                {error && (
+                  <p className="text-sm text-red-500">{error}</p>
+                )}
 
                 <button
                   type="submit"
