@@ -14,6 +14,18 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/auditpreview",
+        destination: "/auditpreview/index.html",
+      },
+      {
+        source: "/auditpreview/",
+        destination: "/auditpreview/index.html",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
