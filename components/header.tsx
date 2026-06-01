@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
+import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { siteConfig } from "@/lib/metadata";
 
@@ -37,13 +38,15 @@ function HamburgerIcon({ isOpen }: { isOpen: boolean }): ReactNode {
 
 export function Header(): ReactNode {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+  const showNav = pathname !== "/getstarted";
 
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-1003 bg-background/80 backdrop-blur-md border-b border-border/50">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6 sm:px-8">
           <motion.a
-            href="#"
+            href="/"
             className="flex items-center"
             aria-label="Brixo home"
             initial={{ opacity: 0, y: -6 }}
@@ -59,23 +62,25 @@ export function Header(): ReactNode {
             />
           </motion.a>
 
-          <motion.nav
-            className="hidden md:flex items-center gap-8"
-            aria-label="Main navigation"
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15, ease }}
-          >
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
-          </motion.nav>
+          {showNav && (
+            <motion.nav
+              className="hidden md:flex items-center gap-8"
+              aria-label="Main navigation"
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.15, ease }}
+            >
+              {navLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </motion.nav>
+          )}
 
           <motion.div
             className="hidden md:flex items-center"
@@ -117,7 +122,7 @@ export function Header(): ReactNode {
               className="px-6 py-6 flex flex-col gap-1"
               aria-label="Mobile navigation"
             >
-              {navLinks.map((link) => (
+              {showNav && navLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
