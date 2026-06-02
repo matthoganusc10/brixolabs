@@ -8,6 +8,7 @@ const navLinks = [
   { label: "The Problem", href: "#problem" },
   { label: "Why Brixo", href: "#why" },
   { label: "FAQ", href: "#faq" },
+  { label: "Security", href: "https://trust.brixo.com/", external: true },
   { label: "Privacy", href: "https://docs.brixo.com/security/privacy", external: true },
   {
     label: "See where your spend goes",
@@ -53,9 +54,25 @@ export function Footer(): ReactNode {
             ))}
           </nav>
         </div>
-        <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row justify-between gap-4 text-xs text-muted-foreground">
+        <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
           <p>© {year} Brixo. All rights reserved.</p>
-          <p>Get control of your AI spend.</p>
+          <div className="flex items-center gap-6">
+            <p>Get control of your AI spend.</p>
+            <a
+              href="https://trust.brixo.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="SOC 2 certified — view trust center"
+            >
+              <Image
+                src="/soc2.png"
+                alt="AICPA SOC 2 certified"
+                width={48}
+                height={48}
+                className="opacity-70 hover:opacity-100 transition-opacity"
+              />
+            </a>
+          </div>
         </div>
       </div>
     </footer>
