@@ -11,7 +11,7 @@ const navLinks = [
   { label: "Security", href: "https://trust.brixo.com/", external: true },
   { label: "Privacy", href: "https://docs.brixo.com/security/privacy", external: true },
   {
-    label: "See where your spend goes",
+    label: "Map your AI spend",
     href: siteConfig.bookingUrl,
     external: true,
   },
