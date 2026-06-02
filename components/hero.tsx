@@ -79,9 +79,9 @@ export function Hero(): ReactNode {
           transition={{ duration: 0.6, delay: 0.5, ease }}
           className="mt-10 text-lg sm:text-xl font-medium text-foreground max-w-2xl leading-snug"
         >
-          Brixo shows you exactly where your team&apos;s AI spend goes &mdash;
-          across every tool, model, and engineer &mdash; so you can finally see
-          it, understand it, and stay ahead of it.
+          Brixo pulls every dollar of AI spend into one view, across every
+          tool, model, and engineer, and shows you what it bought. Not just
+          where the money went, but whether it&apos;s working.
         </motion.p>
 
         <motion.div
