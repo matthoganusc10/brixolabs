@@ -6,22 +6,45 @@ import { AnimatePresence, motion } from "motion/react";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-const items = [
+const items: { q: string; a: ReactNode }[] = [
   {
     q: "We already monitor cloud costs.",
-    a: "Cloud cost tools weren't built for token economics, prompt optimization, or multi-model routing. The tools that work for AWS don't work for this.",
+    a: "Cloud cost tools were not built for token economics, prompt waste, or routing across models and providers. The methods that track cloud spend miss most of what drives an AI bill. Different problem, different instrument.",
   },
   {
     q: "Will this put limits on my engineers?",
-    a: "No. Brixo gives you visibility and threshold alerts, not hard caps. You decide what to do with the information. Nobody on your team gets throttled or blocked mid-task.",
+    a: (
+      <>
+        No. The goal is visibility, <em>not</em> restrictions. You see how AI
+        gets used first, then you decide what, if anything, to change. Most
+        teams find the win is routing commodity work to cheaper models, not
+        slowing anyone down.
+      </>
+    ),
   },
   {
-    q: "Will optimization hurt output quality?",
-    a: "We're not changing what your tools do. We surface places where you pay more for the same result. Same output, lower bill, your call on whether to act.",
+    q: "Will optimizing hurt output quality?",
+    a: "No. Brixo looks for ways to lower inference cost without touching quality, mostly waste you would cut anyway (premium models on throwaway tasks, reloaded context, idle agents). Every change is surfaced for your team to approve. Nothing is forced.",
   },
   {
-    q: "We're too early to think about this.",
-    a: "The visibility gap compounds fast. Wrong model, wasted context, idle seats: these quietly run into five and six figures before anyone has a single view of the invoice. Earlier is cheaper.",
+    q: "We are too early to think about this.",
+    a: "If your AI bill is small and flat, you are. If it is growing fast and you have no answer for what it bought, that is the moment, not later. Per-engineer AI cost is heading toward a salary-sized line item. Easier to instrument now than to untangle at $200K a head.",
+  },
+  {
+    q: "How long does it take?",
+    a: "A full audit of your spend runs 5 to 10 days. From there, the ongoing back office (a standing set of agents that reconcile, forecast, and hunt waste continuously) is a separate conversation. Start with the audit.",
+  },
+  {
+    q: "Do you see our prompts or our data?",
+    a: "For the audit, no. We work from billing and usage metadata, not prompt or response content. If you later turn on request-level controls, you choose exactly what passes through and what stays private, and every decision lands in an audit log. Your data is yours.",
+  },
+  {
+    q: "How do you pull spend from tools that have no real API?",
+    a: "Cleanly where a provider offers it, and through billing capture where they do not. Think of it as Plaid for AI costs: one connected view across Anthropic, OpenAI, Cursor, Copilot, internal agents, and the rest, including the platforms that would rather you not see the bill.",
+  },
+  {
+    q: "What about our agents?",
+    a: "Agents are the spenders nobody watches. They run overnight, bill while you sleep, and rarely sit in anyone's budget. Brixo registers every agent, attributes its spend like a person's, and gives you a cap and a kill switch. In an agent-heavy org this is where the surprise bills come from.",
   },
 ];
 
@@ -56,7 +79,7 @@ export function FAQ(): ReactNode {
           {items.map((item, i) => {
             const isOpen = open === i;
             return (
-              <div key={item.q} className="border-b border-border">
+              <div key={i} className="border-b border-border">
                 <h3>
                   <button
                     type="button"
