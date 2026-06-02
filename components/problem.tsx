@@ -7,16 +7,16 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 const cards = [
   {
-    stat: “$18,000 a month. Six months. Nobody noticed.”,
-    body: “One team burned that on context thrashing, starting fresh sessions instead of continuing them, for half a year. The waste was not the surprise. The surprise was that no one saw it.”,
+    stat: "$18,000 a month. Six months. Nobody noticed.",
+    body: "One team burned that on context thrashing, starting fresh sessions instead of continuing them, for half a year. The waste was not the surprise. The surprise was that no one saw it.",
   },
   {
-    stat: “More on Codex than on the team.”,
-    body: “A dev team spent more per month on a single coding tool than its own salary line. Nobody inside the company knew until the invoice landed.”,
+    stat: "More on Codex than on the team.",
+    body: "A dev team spent more per month on a single coding tool than its own salary line. Nobody inside the company knew until the invoice landed.",
   },
   {
-    stat: “112,000 tokens to say \”hi.\””,
-    body: “One greeting pulled the entire session context. Two letters, a six-figure token count, and zero visibility into why it happened.”,
+    stat: '112,000 tokens to say "hi."',
+    body: "One greeting pulled the entire session context. Two letters, a six-figure token count, and zero visibility into why it happened.",
   },
 ];
 
