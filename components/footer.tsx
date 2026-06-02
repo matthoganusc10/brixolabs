@@ -2,19 +2,10 @@
 
 import Image from "next/image";
 import { type ReactNode } from "react";
-import { siteConfig } from "@/lib/metadata";
 
 const navLinks = [
-  { label: "The Problem", href: "#problem" },
-  { label: "Why Brixo", href: "#why" },
-  { label: "FAQ", href: "#faq" },
   { label: "Security", href: "https://trust.brixo.com/", external: true },
   { label: "Privacy", href: "https://docs.brixo.com/security/privacy", external: true },
-  {
-    label: "Map your AI spend",
-    href: siteConfig.bookingUrl,
-    external: true,
-  },
 ];
 
 export function Footer(): ReactNode {

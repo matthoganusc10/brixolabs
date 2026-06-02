@@ -8,11 +8,7 @@ import { siteConfig } from "@/lib/metadata";
 
 const ease = [0.23, 1, 0.32, 1] as const;
 
-const navLinks = [
-  { label: "The Problem", href: "#problem" },
-  { label: "Why Brixo", href: "#why" },
-  { label: "FAQ", href: "#faq" },
-];
+const navLinks: { label: string; href: string }[] = [];
 
 function HamburgerIcon({ isOpen }: { isOpen: boolean }): ReactNode {
   return (
@@ -94,7 +90,7 @@ export function Header(): ReactNode {
               rel="noopener noreferrer"
               className="px-5 py-2 text-sm font-medium bg-foreground text-background rounded-full hover:bg-foreground/90 transition-colors"
             >
-              See where your spend goes
+              Map your AI spend
             </a>
           </motion.div>
 
@@ -139,7 +135,7 @@ export function Header(): ReactNode {
                 onClick={() => setMobileOpen(false)}
                 className="mt-6 w-full py-3 text-center text-sm font-medium bg-foreground text-background rounded-full hover:bg-foreground/90 transition-colors"
               >
-                See where your spend goes
+                Map your AI spend
               </a>
             </nav>
           </motion.div>
