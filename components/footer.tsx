@@ -5,7 +5,7 @@ import { type ReactNode } from "react";
 
 const navLinks = [
   { label: "Security", href: "https://trust.brixo.com/", external: true },
-  { label: "Privacy", href: "https://docs.brixo.com/security/privacy", external: true },
+  { label: "Privacy", href: "/privacy" },
 ];
 
 export function Footer(): ReactNode {
