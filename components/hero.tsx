@@ -97,7 +97,7 @@ export function Hero(): ReactNode {
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-2 px-7 py-4 bg-foreground text-background rounded-full text-sm font-medium hover:bg-foreground/90 active:scale-[0.98] transition-all duration-150"
           >
-            See where your spend goes
+            Map your AI Spend
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </a>
         </motion.div>
