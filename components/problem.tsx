@@ -7,16 +7,16 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 const cards = [
   {
-    stat: "$18,000 a month, six months unnoticed.",
-    body: "One team burned that on context thrashing — starting new sessions instead of continuing them — for half a year. The spend wasn't the surprise. The fact that nobody could see it was.",
+    stat: “$18,000 a month. Six months. Nobody noticed.”,
+    body: “One team burned that on context thrashing, starting fresh sessions instead of continuing them, for half a year. The waste was not the surprise. The surprise was that no one saw it.”,
   },
   {
-    stat: "Token costs above payroll.",
-    body: "A dev team was spending more on Codex per month than the team's salary line, and no one inside the org had a number for it until someone went looking.",
+    stat: “More on Codex than on the team.”,
+    body: “A dev team spent more per month on a single coding tool than its own salary line. Nobody inside the company knew until the invoice landed.”,
   },
   {
-    stat: "112,000 tokens to say “hi.”",
-    body: "A single greeting in Codex pulled the full session context. Two letters, a six-figure token cost, and zero visibility into why.",
+    stat: “112,000 tokens to say \”hi.\””,
+    body: “One greeting pulled the entire session context. Two letters, a six-figure token count, and zero visibility into why it happened.”,
   },
 ];
 
@@ -82,7 +82,7 @@ export function Problem(): ReactNode {
           className="mt-20 border-t border-border pt-12 text-3xl sm:text-4xl md:text-5xl font-semibold font-serif text-foreground leading-[1.1] tracking-tight max-w-4xl"
         >
           Most teams can&apos;t answer a basic question: where did our AI spend
-          actually go, by whom, on what, and is it working?{" "}
+          go, by whom, on what, and did it produce anything?{" "}
           <span className="text-[#FE79BB]">Brixo answers it.</span>
         </motion.p>
       </div>
