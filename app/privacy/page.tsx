@@ -16,24 +16,7 @@ export default function PrivacyPage(): ReactNode {
       <main id="main-content" className="flex-1">
         <div className="mx-auto max-w-3xl px-6 sm:px-8 pt-32 pb-24">
 
-          {/* Docs note */}
-          <div className="mb-12 rounded-lg border border-border bg-muted px-5 py-4 text-sm text-muted-foreground">
-            <p className="font-medium text-foreground mb-1">Documentation Index</p>
-            <p>
-              Fetch the complete documentation index at:{" "}
-              <a
-                href="https://docs.brixo.com/llms.txt"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-foreground transition-colors"
-              >
-                https://docs.brixo.com/llms.txt
-              </a>
-            </p>
-            <p className="mt-1">Use this file to discover all available pages before exploring further.</p>
-          </div>
-
-          <h1 className="text-4xl sm:text-5xl font-serif font-medium text-foreground mb-4">
+<h1 className="text-4xl sm:text-5xl font-serif font-medium text-foreground mb-4">
             Privacy Policy
           </h1>
           <p className="text-sm text-muted-foreground mb-16">Last Updated: April 8th, 2026</p>
