@@ -8,7 +8,7 @@ const navLinks = [
   { label: "The Problem", href: "#problem" },
   { label: "Why Brixo", href: "#why" },
   { label: "FAQ", href: "#faq" },
-  { label: "Privacy", href: "/privacy" },
+  { label: "Privacy", href: "https://docs.brixo.com/security/privacy", external: true },
   {
     label: "See where your spend goes",
     href: siteConfig.bookingUrl,
