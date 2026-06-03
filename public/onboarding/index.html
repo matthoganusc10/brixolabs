@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Can Brixo Tell You? · AI Spend Guided Flow</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20120%20100%27%3E%3Cpolygon%20points%3D%2739.4%2C21%2055%2C30%2039.4%2C39%2023.8%2C30%27%20fill%3D%27%23FFA375%27%20stroke%3D%27%234361EE%27%20stroke-width%3D%272.4%27%20stroke-linejoin%3D%27round%27%2F%3E%3Cpolygon%20points%3D%2770.6%2C21%2086.2%2C30%2070.6%2C39%2055%2C30%27%20fill%3D%27%23FFA375%27%20stroke%3D%27%234361EE%27%20stroke-width%3D%272.4%27%20stroke-linejoin%3D%27round%27%2F%3E%3Cpolygon%20points%3D%2723.8%2C48%2023.8%2C30%2039.4%2C39%2039.4%2C57%27%20fill%3D%27%23F472B6%27%20stroke%3D%27%234361EE%27%20stroke-width%3D%272.4%27%20stroke-linejoin%3D%27round%27%2F%3E%3Cpolygon%20points%3D%2755%2C48%2055%2C30%2039.4%2C39%2039.4%2C57%27%20fill%3D%27%234361EE%27%20stroke%3D%27%234361EE%27%20stroke-width%3D%272.4%27%20stroke-linejoin%3D%27round%27%2F%3E%3Cpolygon%20points%3D%2755%2C48%2055%2C30%2070.6%2C39%2070.6%2C57%27%20fill%3D%27%23F472B6%27%20stroke%3D%27%234361EE%27%20stroke-width%3D%272.4%27%20stroke-linejoin%3D%27round%27%2F%3E%3Cpolygon%20points%3D%2786.2%2C48%2086.2%2C30%2070.6%2C39%2070.6%2C57%27%20fill%3D%27%234361EE%27%20stroke%3D%27%234361EE%27%20stroke-width%3D%272.4%27%20stroke-linejoin%3D%27round%27%2F%3E%3Cpolygon%20points%3D%2755%2C48%2070.6%2C57%2055%2C66%2039.4%2C57%27%20fill%3D%27%23FFA375%27%20stroke%3D%27%234361EE%27%20stroke-width%3D%272.4%27%20stroke-linejoin%3D%27round%27%2F%3E%3Cpolygon%20points%3D%2739.4%2C75%2039.4%2C57%2055%2C66%2055%2C84%27%20fill%3D%27%23F472B6%27%20stroke%3D%27%234361EE%27%20stroke-width%3D%272.4%27%20stroke-linejoin%3D%27round%27%2F%3E%3Cpolygon%20points%3D%2770.6%2C75%2070.6%2C57%2055%2C66%2055%2C84%27%20fill%3D%27%236EE7B7%27%20stroke%3D%27%234361EE%27%20stroke-width%3D%272.4%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E">
+<style>
+  :root{
+    --bg:#f5f5f8; --surface:#ffffff; --surface-2:#f0f0f5; --hover:#e8e8f0;
+    --border:#d8d8e4; --border-soft:#e6e6ee;
+    --ink:#1a1a2e; --muted:#5a5a72; --faint:#8888a0;
+    --accent:#4f46e5; --accent-light:#6366f1; --accent-dim:rgba(79,70,229,.08);
+    --cyan:#0891b2; --green:#16a34a; --amber:#d97706; --purple:#9333ea; --red:#dc2626;
+    --low:#6b7280; --mod:#2563eb; --high:#16a34a; --adv:#9333ea;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:26px 24px 90px}
+
+  /* Topbar with logo upper-right */
+  .topbar{display:flex;align-items:center;gap:12px;padding-bottom:22px;border-bottom:1px solid var(--border-soft);margin-bottom:26px}
+  .topbar .lead{font-size:14px;font-weight:700}
+  .topbar .lead span{color:var(--faint);font-weight:500}
+  .topbar .spacer{flex:1}
+  .topbar .logo{width:34px;height:29px;flex-shrink:0}
+  .talk-cta{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff;font-size:12.5px;font-weight:600;text-decoration:none;transition:opacity .2s;white-space:nowrap}
+  .talk-cta:hover{opacity:.9}
+
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  h1{font-size:36px;line-height:1.12;letter-spacing:-.02em;margin:12px 0 12px}
+  h1 .grad{background:linear-gradient(90deg,var(--accent),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .intro p{font-size:16px;color:var(--muted);max-width:700px}
+
+  /* Stepper progress */
+  .flowsteps{display:flex;align-items:center;gap:8px;margin:24px 0 22px;font-size:12.5px;font-weight:600}
+  .flowsteps .s{display:flex;align-items:center;gap:7px;color:var(--faint)}
+  .flowsteps .s .dot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;background:var(--surface)}
+  .flowsteps .s.active{color:var(--accent)}
+  .flowsteps .s.active .dot{background:var(--accent);border-color:var(--accent);color:#fff}
+  .flowsteps .s.done{color:var(--green)}
+  .flowsteps .s.done .dot{background:var(--green);border-color:var(--green);color:#fff}
+  .flowsteps .bar{width:34px;height:1.5px;background:var(--border)}
+
+  .hide{display:none!important}
+
+  /* Toolbar */
+  .toolbar{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+  .chip{font-size:12.5px;font-weight:600;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:7px 13px;border-radius:8px;cursor:pointer;transition:all .15s}
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  .count{font-size:13px;color:var(--faint);margin-left:auto}
+  .count b{color:var(--ink)}
+
+  /* Select grid */
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .opt{position:relative;background:var(--surface);border:1.5px solid var(--border);border-radius:13px;padding:16px 15px;cursor:pointer;transition:all .15s;border-top:3px solid var(--c)}
+  .opt:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 18px rgba(30,30,60,.07)}
+  .opt.on{border-color:var(--accent);background:var(--accent-dim);box-shadow:0 6px 18px rgba(79,70,229,.12)}
+  .opt .ic{font-size:22px}
+  .opt .nm{font-size:14px;font-weight:700;margin:8px 0 4px;line-height:1.25}
+  .opt .vl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--c)}
+  .opt .check{position:absolute;top:12px;right:12px;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;background:transparent;transition:all .15s}
+  .opt.on .check{background:var(--accent);border-color:var(--accent)}
+  .opt .check svg{opacity:0;width:11px;height:11px}
+  .opt.on .check svg{opacity:1}
+
+  .actionbar{display:flex;align-items:center;gap:14px;margin-top:24px}
+  .btn{display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;padding:12px 24px;border-radius:10px;transition:all .2s;text-decoration:none}
+  .btn.primary{background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff}
+  .btn.primary:hover{opacity:.9}
+  .btn.primary:disabled{opacity:.4;cursor:not-allowed}
+  .btn.ghost{background:var(--surface);border:1px solid var(--border);color:var(--muted)}
+  .btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .actionbar .note{font-size:12.5px;color:var(--faint)}
+  .footnote{margin-top:26px;font-size:12.5px;color:var(--faint);max-width:760px;line-height:1.65;border-top:1px solid var(--border-soft);padding-top:16px}
+  .footnote b{color:var(--muted);font-weight:600}
+  .footnote .ast{color:var(--accent);font-weight:700;margin-right:2px}
+
+  /* Walkthrough */
+  .walkhead{display:flex;align-items:center;gap:13px;margin-bottom:6px}
+  .walkhead .ic{font-size:30px}
+  .walkhead .nm{font-size:24px;font-weight:700;letter-spacing:-.01em}
+  .walkhead .vbadge{margin-left:auto;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent);padding:5px 11px;border-radius:999px;white-space:nowrap}
+  .walkstepn{font-size:12.5px;color:var(--faint);font-weight:600;margin-bottom:18px}
+
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+
+  /* (a) Overview card, collapsible */
+  .ov{background:var(--surface);border:1px solid var(--border);border-radius:16px;border-left:4px solid var(--c);overflow:hidden}
+  .ov-head{display:flex;align-items:center;gap:10px;padding:16px 18px;cursor:pointer;user-select:none}
+  .ov-head .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+  .ov-head .toggle{margin-left:auto;width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);transition:transform .2s}
+  .ov.collapsed .ov-head .toggle{transform:rotate(-90deg)}
+  .ov-tagline{font-size:13px;color:var(--muted);padding:0 18px 14px}
+  .ov-body{padding:0 18px 18px}
+  .ov.collapsed .ov-body{display:none}
+  .ov.collapsed .ov-tagline{padding-bottom:16px}
+  .ovbox{border:1px solid var(--border-soft);border-left-width:3px;border-left-style:solid;border-radius:8px;padding:11px 13px;margin-bottom:10px}
+  .ovbox .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+  .ovbox.want{border-left-color:var(--accent);background:var(--accent-dim)}
+  .ovbox.want .lbl{color:var(--accent)}
+  .ovbox.want .qtext{font-size:13px;color:var(--ink)}
+  .ovbox.tell{border-left-color:var(--green)} .ovbox.tell .lbl{color:var(--green)}
+  .ovbox.data{border-left-color:var(--cyan)} .ovbox.data .lbl{color:var(--cyan)}
+  .ovbox.limit{border-left-color:var(--amber)} .ovbox.limit .lbl{color:var(--amber)}
+  .tlist{list-style:none;display:flex;flex-direction:column;gap:5px}
+  .tlist li{font-size:13px;padding-left:20px;position:relative;color:var(--ink)}
+  .tlist.checks li::before{content:'\2713';position:absolute;left:0;color:var(--green);font-weight:700}
+  .tlist.flags li{color:var(--muted)}
+  .tlist.flags li::before{content:'!';position:absolute;left:0;top:0;width:13px;height:13px;border-radius:50%;background:var(--amber);color:#fff;font-size:9px;font-weight:700;line-height:13px;text-align:center}
+  .pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}
+  .pill-d{font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px;border:1px solid}
+  .legend{display:flex;flex-wrap:wrap;gap:9px;border-top:1px dashed var(--border-soft);padding-top:8px;font-size:9.5px;color:var(--faint)}
+  .legend span{display:inline-flex;align-items:center;gap:4px}
+  .legend .dot{width:8px;height:8px;border-radius:2px;display:inline-block}
+  .quote{font-size:13px;font-style:italic;color:var(--ink);background:var(--accent-dim);border-radius:10px;padding:12px 15px;border-left:3px solid var(--accent)}
+
+  /* (b) Data preview card */
+  .pv{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+  .pv-head{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--border-soft);background:linear-gradient(135deg,#fafaff,#f0f0f7)}
+  .pv-head .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+  .pv-head .src{margin-left:auto;font-size:10.5px;font-weight:600;color:var(--cyan);background:rgba(8,145,178,.1);padding:3px 9px;border-radius:5px}
+  .pv-body{padding:18px}
+  .sampletag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--amber);background:rgba(217,119,6,.1);padding:2px 8px;border-radius:4px;margin-bottom:14px}
+
+  /* preview primitives */
+  .tiles{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+  .tile{flex:1;min-width:84px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;padding:11px 12px}
+  .tile .v{font-size:19px;font-weight:700;letter-spacing:-.3px}
+  .tile .l{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;margin-top:2px;line-height:1.3}
+  .bars{display:flex;flex-direction:column;gap:9px}
+  .barrow{display:grid;grid-template-columns:118px 1fr 60px;gap:10px;align-items:center;font-size:12.5px}
+  .barrow .bl{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .barrow .track{height:9px;background:var(--surface-2);border-radius:5px;overflow:hidden}
+  .barrow .fill{height:100%;border-radius:5px}
+  .barrow .bv{text-align:right;font-weight:600;font-size:12px}
+  .mtable{width:100%;border-collapse:collapse}
+  .mtable th{text-align:left;font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;padding:6px 8px;border-bottom:1px solid var(--border)}
+  .mtable td{padding:8px;border-bottom:1px solid var(--border-soft);font-size:12.5px}
+  .mtable td.r,.mtable th.r{text-align:right}
+  .mtable .more td{color:var(--faint);font-size:11.5px;text-align:center;font-style:italic}
+  .pill{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:5px}
+  .pill.g{background:rgba(22,163,74,.12);color:var(--green)}
+  .pill.a{background:rgba(217,119,6,.12);color:var(--amber)}
+  .pill.r{background:rgba(220,38,38,.1);color:var(--red)}
+  .pill.n{background:var(--surface-2);color:var(--muted)}
+  .pvnote{margin-top:14px;font-size:12px;color:var(--muted);background:var(--surface-2);border-radius:8px;padding:10px 13px;border-left:3px solid var(--c)}
+  .pvnote.lock{border-left-color:var(--purple)}
+  .feed{display:flex;flex-direction:column}
+  .feedrow{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;padding:8px 4px;border-bottom:1px solid var(--border-soft);font-size:12px}
+  .feedrow .tm{color:var(--faint);font-variant-numeric:tabular-nums}
+  .feedrow .ev b{font-weight:600}
+  .lockwrap{position:relative}
+  .lockblur{filter:blur(2.5px);opacity:.7;pointer-events:none}
+  .lockover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--purple);font-size:12.5px;font-weight:600}
+  .lockover .lk{font-size:22px}
+
+  /* Walk nav */
+  .walknav{display:flex;align-items:center;gap:12px;margin-top:24px}
+  .walknav .dots{display:flex;gap:7px;margin:0 auto}
+  .walknav .pd{width:9px;height:9px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .15s}
+  .walknav .pd.on{background:var(--accent);transform:scale(1.25)}
+  .walknav .pd.seen{background:var(--accent-light)}
+  .editlink{font-size:12.5px;color:var(--faint);cursor:pointer;text-decoration:underline;margin-bottom:16px;display:inline-block}
+  .editlink:hover{color:var(--accent)}
+
+  /* Audit preview phase */
+  .previewhead{background:linear-gradient(135deg,#ffffff,#f0f0f5);border:1px solid var(--border);border-radius:16px;padding:24px 28px;margin-bottom:18px}
+  .previewhead h2{font-size:20px;font-weight:700;margin-bottom:6px}
+  .previewhead p{font-size:13.5px;color:var(--muted);max-width:780px}
+  .opp-row{display:flex;gap:14px;margin-top:18px;flex-wrap:wrap}
+  .opp{flex:1;min-width:140px;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:15px 18px}
+  .opp .v{font-size:23px;font-weight:700;letter-spacing:-.5px}
+  .opp .l{font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;margin-top:3px}
+  .mods{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .mod{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;border-left:4px solid var(--c)}
+  .mod .top{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .mod .ic{font-size:20px}
+  .mod .chname{font-size:12px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.04em}
+  .mod .secref{margin-left:auto;font-size:11px;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);padding:4px 10px;border-radius:6px;white-space:nowrap;cursor:help}
+  .mod .secref .iq{font-size:9px;opacity:.7;margin-left:3px;vertical-align:1px}
+  .preview-note{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--muted);background:var(--surface-2);border:1px solid var(--border-soft);border-radius:10px;padding:12px 15px;margin-bottom:14px;line-height:1.55}
+  .preview-note .pi{color:var(--accent);flex-shrink:0;font-size:15px;line-height:1.3}
+  .preview-note b{color:var(--ink);font-weight:600}
+  .mod .metric{font-size:25px;font-weight:700;letter-spacing:-.5px;margin:4px 0 2px}
+  .mod .mtitle{font-size:13.5px;font-weight:600;margin-bottom:6px}
+  .mod .mdesc{font-size:13px;color:var(--muted)}
+  .mod .mlink{display:inline-flex;align-items:center;gap:5px;margin-top:13px;font-size:12px;font-weight:600;color:var(--accent);text-decoration:none}
+  .mod .mlink:hover{text-decoration:underline}
+  .cta{margin-top:22px;background:linear-gradient(135deg,rgba(79,70,229,.07),rgba(8,145,178,.07));border:1px solid rgba(79,70,229,.25);border-radius:16px;padding:28px 32px;text-align:center}
+  .cta h3{font-size:19px;font-weight:700;margin-bottom:8px}
+  .cta p{font-size:13.5px;color:var(--muted);max-width:620px;margin:0 auto 18px}
+  .cta .sub{margin-top:12px;font-size:11.5px;color:var(--faint)}
+
+  .foot{text-align:center;color:var(--faint);font-size:12px;margin-top:40px}
+  .report-footer{border-top:1px solid var(--border);padding:20px 0 0;margin-top:18px;display:flex;justify-content:space-between;align-items:center;color:var(--faint);font-size:11px;flex-wrap:wrap;gap:10px}
+  .footer-brand{display:flex;align-items:center;gap:7px}
+  .footer-brand svg{width:20px;height:17px;display:block;flex-shrink:0}
+  .footer-brand span{font-weight:600;color:var(--muted)}
+
+  @media(max-width:860px){
+    .grid{grid-template-columns:repeat(2,1fr)}
+    .duo{grid-template-columns:1fr}
+    .mods{grid-template-columns:1fr}
+    h1{font-size:28px}
+    .barrow{grid-template-columns:96px 1fr 54px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="lead">Brixo <span>· AI Spend Audit</span></div>
+    <div class="spacer"></div>
+    <a class="talk-cta" href="https://zcal.co/t/brixo/45-min" target="_blank" rel="noopener">Talk to Brixo</a>
+    <svg class="logo" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="p1" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect x="0.7" width="2.4" height="4.5" fill="#F472B6" opacity="0.9"/></pattern><pattern id="o1" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect y="0.7" width="4.5" height="2.4" fill="#FFA375" opacity="0.9"/></pattern><pattern id="g1" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect y="0.7" width="4.5" height="2.4" fill="#6EE7B7" opacity="0.85"/></pattern></defs><polygon points="39.4,21 55,30 39.4,39 23.8,30" fill="url(#o1)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="70.6,21 86.2,30 70.6,39 55,30" fill="url(#o1)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="23.8,48 23.8,30 39.4,39 39.4,57" fill="url(#p1)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 55,30 39.4,39 39.4,57" fill="url(#p1)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round" opacity="0.8"/><polygon points="55,48 55,30 70.6,39 70.6,57" fill="url(#p1)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="86.2,48 86.2,30 70.6,39 70.6,57" fill="url(#p1)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round" opacity="0.8"/><polygon points="55,48 70.6,57 55,66 39.4,57" fill="url(#o1)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="39.4,75 39.4,57 55,66 55,84" fill="url(#p1)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="70.6,75 70.6,57 55,66 55,84" fill="url(#g1)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/></svg>
+  </div>
+
+  <div class="flowsteps" id="flowsteps">
+    <div class="s active" data-fs="select"><span class="dot">1</span>Select Channels</div>
+    <div class="bar"></div>
+    <div class="s" data-fs="walk"><span class="dot">2</span>Walk Through</div>
+    <div class="bar"></div>
+    <div class="s" data-fs="preview"><span class="dot">3</span>Audit Preview</div>
+  </div>
+
+  <!-- ============ PHASE 1: SELECT ============ -->
+  <section id="phase-select">
+    <div class="intro">
+      <div class="eyebrow">🔭 Channel Explorer</div>
+      <h1>You spent money on AI.<br><span class="grad">What attribution / ROI reporting can we provide?</span></h1>
+      <p>The answer depends on which channels your AI spend leaves through. Select the channels that apply, and we'll walk you through what each one looks like, then assemble a preview of the audit.<sup style="color:var(--accent)">*</sup></p>
+    </div>
+
+    <div class="toolbar" style="margin-top:26px">
+      <button class="chip" onclick="selectAll()">Select all</button>
+      <button class="chip" onclick="clearAll()">Clear</button>
+      <div class="count"><b id="cnum">0</b> of 8 selected</div>
+    </div>
+    <div class="grid" id="grid"></div>
+
+    <div class="actionbar">
+      <button class="btn primary" id="continueBtn" onclick="startWalk()" disabled>Walk me through it →</button>
+      <span class="note" id="continueNote">Select at least one channel to continue.</span>
+    </div>
+
+    <p class="footnote"><span class="ast">*</span> With Brixo's <b>Allocation &amp; Control</b> tooling, you get visibility and control across <b>every one of these channels</b>, not just the ones your existing data happens to expose, so attribution and ROI reporting cover the full picture.</p>
+  </section>
+
+  <!-- ============ PHASE 2: WALK ============ -->
+  <section id="phase-walk" class="hide">
+    <span class="editlink" onclick="backToSelect()">← Edit selection</span>
+    <div class="walkhead">
+      <span class="ic" id="w-ic"></span>
+      <div class="nm" id="w-nm"></div>
+      <span class="vbadge" id="w-vbadge" style="--c:var(--accent)"></span>
+    </div>
+    <div class="walkstepn" id="w-stepn"></div>
+
+    <div class="duo">
+      <!-- (a) overview -->
+      <div class="ov" id="w-ov" style="--c:var(--accent)">
+        <div class="ov-head" onclick="toggleOverview()">
+          <span class="lbl">What this is</span>
+          <span class="toggle" id="w-ovtoggle">&#9650;</span>
+        </div>
+        <div class="ov-tagline" id="w-tagline"></div>
+        <div class="ov-body" id="w-ovbody"></div>
+      </div>
+      <!-- (b) data preview -->
+      <div class="pv" style="--c:var(--accent)" id="w-pv">
+        <div class="pv-head">
+          <span class="lbl">What the data looks like</span>
+          <span class="src" id="w-src"></span>
+        </div>
+        <div class="pv-body" id="w-pvbody"></div>
+      </div>
+    </div>
+
+    <div class="walknav">
+      <button class="btn ghost" id="w-back" onclick="prevStep()">← Back</button>
+      <div class="dots" id="w-dots"></div>
+      <button class="btn primary" id="w-next" onclick="nextStep()">Next →</button>
+    </div>
+  </section>
+
+  <!-- ============ PHASE 3: PREVIEW ============ -->
+  <section id="phase-preview" class="hide">
+    <span class="editlink" onclick="backToSelect()">← Edit selection</span>
+    <div id="preview-body"></div>
+  </section>
+
+  <div class="foot">Brixo · Sample figures shown for demonstration. A live audit derives every number from your actual invoices, rosters, and logs.</div>
+
+  <div class="report-footer">
+    <div class="footer-brand">
+      <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="ffp" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect x="0.7" width="2.4" height="4.5" fill="#F472B6" opacity="0.9"/></pattern><pattern id="ffo" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect y="0.7" width="4.5" height="2.4" fill="#FFA375" opacity="0.9"/></pattern><pattern id="ffg" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><rect width="4.5" height="4.5" fill="#4361EE"/><rect y="0.7" width="4.5" height="2.4" fill="#6EE7B7" opacity="0.85"/></pattern></defs><polygon points="39.4,21 55,30 39.4,39 23.8,30" fill="url(#ffo)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="70.6,21 86.2,30 70.6,39 55,30" fill="url(#ffo)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="23.8,48 23.8,30 39.4,39 39.4,57" fill="url(#ffp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="55,48 55,30 39.4,39 39.4,57" fill="url(#ffp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round" opacity="0.8"/><polygon points="55,48 55,30 70.6,39 70.6,57" fill="url(#ffp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="86.2,48 86.2,30 70.6,39 70.6,57" fill="url(#ffp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round" opacity="0.8"/><polygon points="55,48 70.6,57 55,66 39.4,57" fill="url(#ffo)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="39.4,75 39.4,57 55,66 55,84" fill="url(#ffp)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/><polygon points="70.6,75 70.6,57 55,66 55,84" fill="url(#ffg)" stroke="#4361EE" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      <span>AI Spend Audit &amp; Analyst by Brixo</span>
+    </div>
+    <div>v1.025 &middot; June 2026</div>
+  </div>
+</div>
+
+<script>
+const AUDIT = "/auditpreview/";
+const OPP = { seats:13200, usage:18400, credits:8600 };
+
+const CHANNELS = [
+  {id:'individual',icon:'💳',name:'Individual Subscriptions',vis:'Low',c:'var(--low)',opp:['seats'],
+   examples:'Claude Pro / Max · ChatGPT Plus / Pro · Gemini Advanced',
+   tagline:'Mostly financial visibility: find unmanaged and duplicate personal spend.',
+   want:'Are employees expensing personal AI tools? Are we paying for unmanaged accounts?',
+   tell:['Vendor spend in card and expense data','Employee-level reimbursements','Duplicate subscriptions across employees','Tools already licensed centrally','Subscriptions to consolidate or cancel'],
+   data:'Expense data, corporate card data, SaaS / vendor spend, employee mapping.',
+   limit:'Usually no admin usage data. Visibility is mostly financial unless the employee connects or exports their own account.',
+   lang:'For individual subscriptions, we can usually identify unmanaged spend and consolidation opportunities, but not meaningful usage analytics unless the provider exposes them.',
+   src:'Expense &amp; card data',
+   preview:`<span class="sampletag">Sample view</span>
+     <div class="tiles">
+       <div class="tile"><div class="v">23</div><div class="l">Personal subs found</div></div>
+       <div class="tile"><div class="v" style="color:var(--amber)">9</div><div class="l">Duplicates</div></div>
+       <div class="tile"><div class="v" style="color:var(--cyan)">$1,840</div><div class="l">/mo unmanaged</div></div>
+     </div>
+     <table class="mtable"><thead><tr><th>Employee</th><th>Tool</th><th class="r">$/mo</th><th>Flag</th></tr></thead><tbody>
+       <tr><td>M. Chen</td><td>ChatGPT Plus</td><td class="r">$20</td><td><span class="pill a">Duplicate</span></td></tr>
+       <tr><td>R. Osei</td><td>Claude Pro</td><td class="r">$20</td><td><span class="pill n">Unmanaged</span></td></tr>
+       <tr><td>T. Vale</td><td>ChatGPT Plus</td><td class="r">$20</td><td><span class="pill a">Duplicate</span></td></tr>
+       <tr><td>D. Singh</td><td>Gemini Advanced</td><td class="r">$22</td><td><span class="pill n">Unmanaged</span></td></tr>
+       <tr class="more"><td colspan="4">+ 19 more rows</td></tr>
+     </tbody></table>
+     <div class="pvnote">Financial footprint only. No prompts, tasks, or usage behind these charges.</div>`},
+
+  {id:'team',icon:'👥',name:'Business / Team Plans',vis:'Moderate',c:'var(--mod)',opp:['seats'],
+   examples:'Claude Team · ChatGPT Business / Team · Gemini Business',
+   tagline:'Seat utilization and adoption straight from the admin console.',
+   want:'Who has access? Who is using it? Are seats wasted? Are users on the right plan?',
+   tell:['Seats purchased vs assigned','Active and inactive users','Adoption trends by team','Wasted seats and right-sizing','User / model spend exports where allowed'],
+   data:'Admin analytics export, billing export, seat roster, user / team mapping.',
+   limit:'May lack Enterprise-grade audit logs, compliance APIs, retention controls, or chat / task-level visibility.',
+   lang:'For Business and Team plans, we can usually show seat utilization, adoption, inactive seats, and sometimes user/model spend, but not what each person did inside every chat.',
+   src:'Admin analytics export',
+   preview:`<span class="sampletag">Sample view</span>
+     <div class="tiles">
+       <div class="tile"><div class="v">60</div><div class="l">Seats purchased</div></div>
+       <div class="tile"><div class="v" style="color:var(--green)">38</div><div class="l">Active (63%)</div></div>
+       <div class="tile"><div class="v" style="color:var(--amber)">6</div><div class="l">Inactive seats</div></div>
+     </div>
+     <div class="bars">
+       <div class="barrow"><span class="bl">Purchased</span><span class="track"><span class="fill" style="width:100%;background:var(--mod)"></span></span><span class="bv">60</span></div>
+       <div class="barrow"><span class="bl">Assigned</span><span class="track"><span class="fill" style="width:90%;background:var(--accent-light)"></span></span><span class="bv">54</span></div>
+       <div class="barrow"><span class="bl">Active 30d</span><span class="track"><span class="fill" style="width:63%;background:var(--green)"></span></span><span class="bv">38</span></div>
+       <div class="barrow"><span class="bl">Power users</span><span class="track"><span class="fill" style="width:13%;background:var(--cyan)"></span></span><span class="bv">8</span></div>
+     </div>
+     <div class="pvnote">16 assigned seats are idle. Right-sizing here is low-risk and fast.</div>`},
+
+  {id:'enterprise',icon:'🏢',name:'Enterprise Seats',vis:'Mod → High',c:'#15803d',opp:['seats'],
+   examples:'Claude Enterprise · ChatGPT Enterprise · Gemini Enterprise',
+   tagline:'Utilization, governance, and right-tiering at organizational scale.',
+   want:'Are we deploying AI broadly and efficiently? Are expensive seats justified? Any overages?',
+   tell:['Seat utilization and active users','Adoption by product surface','Plan mix and overage spend','Underutilized expensive seats','Governance / audit data where enabled'],
+   data:'Enterprise admin analytics, seat roster, billing export, usage reports, user / team mapping.',
+   limit:'Included seat usage may not map cleanly to dollar cost. Task / content visibility usually needs compliance or activity APIs.',
+   lang:'For Enterprise seats, we can usually provide stronger utilization, adoption, governance, and reporting, and depending on enabled controls may enrich with audit metadata.',
+   src:'Enterprise admin + billing',
+   preview:`<span class="sampletag">Sample view</span>
+     <div class="tiles">
+       <div class="tile"><div class="v">187</div><div class="l">Seats</div></div>
+       <div class="tile"><div class="v" style="color:var(--green)">88%</div><div class="l">Utilization</div></div>
+       <div class="tile"><div class="v" style="color:var(--amber)">31</div><div class="l">Over-tiered</div></div>
+     </div>
+     <div class="bars">
+       <div class="barrow"><span class="bl">Enterprise tier</span><span class="track"><span class="fill" style="width:100%;background:#15803d"></span></span><span class="bv">120</span></div>
+       <div class="barrow"><span class="bl">Team tier</span><span class="track"><span class="fill" style="width:38%;background:var(--accent-light)"></span></span><span class="bv">45</span></div>
+       <div class="barrow"><span class="bl">Pro tier</span><span class="track"><span class="fill" style="width:18%;background:var(--cyan)"></span></span><span class="bv">22</span></div>
+     </div>
+     <div class="pvnote">31 Enterprise seats show light, read-only usage a lower tier would cover &mdash; about $2,800/mo.</div>`},
+
+  {id:'api',icon:'🔑',name:'API Usage',vis:'High',c:'var(--high)',opp:['usage'],
+   examples:'Claude · OpenAI · Gemini APIs · internal apps · backend AI features',
+   tagline:'The richest channel: spend by model, key, workspace, and project.',
+   want:'Which models are used? Which teams or apps drive spend? Are expensive models used appropriately?',
+   tell:['Spend by model and token type','Spend by key, workspace, and project','Usage by team, app, and period','Service tier and caching efficiency','Spend vs budget, spikes, anomalies'],
+   data:'Usage / cost API access, API key list, workspace list, team / project mapping.',
+   limit:'Attribution quality depends on key hygiene. One shared key for the whole company creates ambiguity.',
+   lang:'For API usage, we can provide much richer attribution: spend by model, key, workspace, team, app, and period. Depth depends on how cleanly keys map to owners.',
+   src:'Usage &amp; cost API',
+   preview:`<span class="sampletag">Sample view</span>
+     <div class="tiles">
+       <div class="tile"><div class="v">$96,800</div><div class="l">Metered (90d)</div></div>
+       <div class="tile"><div class="v">1.2B</div><div class="l">Tokens</div></div>
+       <div class="tile"><div class="v" style="color:var(--green)">34%</div><div class="l">Cached</div></div>
+     </div>
+     <div class="bars">
+       <div class="barrow"><span class="bl">Claude Opus</span><span class="track"><span class="fill" style="width:100%;background:var(--accent)"></span></span><span class="bv">$38.2K</span></div>
+       <div class="barrow"><span class="bl">GPT-4o</span><span class="track"><span class="fill" style="width:64%;background:var(--cyan)"></span></span><span class="bv">$24.5K</span></div>
+       <div class="barrow"><span class="bl">Claude Sonnet</span><span class="track"><span class="fill" style="width:50%;background:var(--accent-light)"></span></span><span class="bv">$19.1K</span></div>
+       <div class="barrow"><span class="bl">Gemini Pro</span><span class="track"><span class="fill" style="width:39%;background:var(--green)"></span></span><span class="bv">$15.0K</span></div>
+     </div>
+     <div class="pvnote">Premium models are handling formatting and boilerplate. Routing those down is ~$4,800/mo.</div>`},
+
+  {id:'devtools',icon:'⌨️',name:'Dev Tools / Claude Code',vis:'High',c:'#15803d',opp:['usage'],
+   examples:'Claude Code · Cursor-style usage · AI coding agents · repo-connected tools',
+   tagline:'Developer adoption and directional productivity signals.',
+   want:'Which developers use AI? Is it producing output? Which teams are adopting it?',
+   tell:['Usage by developer and team','Sessions, tokens, estimated cost','Model usage mix','Accepted / rejected edits','Commits and PRs tied to usage in some cases'],
+   data:'Claude Code analytics export / API, user / team mapping.',
+   limit:'Productivity signals are directional, not definitive ROI. They need context from your engineering workflow.',
+   lang:'For developer AI tools, we can often connect spend to adoption and output signals. Treat it as directional productivity evidence, not a definitive ROI calculation.',
+   src:'Claude Code analytics',
+   preview:`<span class="sampletag">Sample view</span>
+     <div class="tiles">
+       <div class="tile"><div class="v">22</div><div class="l">Active devs</div></div>
+       <div class="tile"><div class="v" style="color:var(--amber)">49%</div><div class="l">Spend in top 4</div></div>
+       <div class="tile"><div class="v" style="color:var(--green)">High</div><div class="l">Adoption</div></div>
+     </div>
+     <table class="mtable"><thead><tr><th>Engineer</th><th class="r">90d Spend</th><th>Activity</th></tr></thead><tbody>
+       <tr><td>J. Walsh</td><td class="r">$18,920</td><td><span class="pill g">High</span></td></tr>
+       <tr><td>K. Patel</td><td class="r">$16,740</td><td><span class="pill g">High</span></td></tr>
+       <tr><td>R. Martinez</td><td class="r">$14,200</td><td><span class="pill a">Medium</span></td></tr>
+       <tr><td>A. Torres</td><td class="r">$9,340</td><td><span class="pill r">Low</span></td></tr>
+     </tbody></table>
+     <div class="pvnote">High spend is fine when it ships work. Low-activity, high-spend users are the coaching targets.</div>`},
+
+  {id:'agents',icon:'🤖',name:'Agents & Workflows',vis:'High if instrumented',c:'#16a34a',opp:['usage'],
+   examples:'Support · sales research · SEO / content · automation · coding agents',
+   tagline:'An operating ledger of the work your agents actually perform.',
+   want:'Which agents exist? What do they cost? Which are useful or wasteful?',
+   tell:['Spend by agent, workflow, environment','Owner, provider, and model','Task type and run frequency','Success / failure and retry rates','High-cost, low-value agents to investigate'],
+   data:'Agent registry, orchestration logs, provider usage, run metadata, owner / team mapping.',
+   limit:'Strong visibility only if the agent layer is instrumented or owned by you / Brixo.',
+   lang:'For agents and internal workflows, we can provide strong activity-level visibility if the agent layer emits logs or metadata. AI spend starts to look less like a bill and more like an operating ledger.',
+   src:'Agent registry + logs',
+   preview:`<span class="sampletag">Sample view</span>
+     <div class="tiles">
+       <div class="tile"><div class="v">14</div><div class="l">Agents</div></div>
+       <div class="tile"><div class="v" style="color:var(--red)">3</div><div class="l">High-cost low-value</div></div>
+       <div class="tile"><div class="v" style="color:var(--cyan)">$2,400</div><div class="l">/mo waste</div></div>
+     </div>
+     <table class="mtable"><thead><tr><th>Agent</th><th class="r">$/mo</th><th>Success</th></tr></thead><tbody>
+       <tr><td>support-triage</td><td class="r">$1,240</td><td><span class="pill g">98%</span></td></tr>
+       <tr><td>sales-research</td><td class="r">$890</td><td><span class="pill a">71%</span></td></tr>
+       <tr><td>seo-writer</td><td class="r">$640</td><td><span class="pill r">12% · idle loop</span></td></tr>
+       <tr><td>data-sync</td><td class="r">$410</td><td><span class="pill g">99%</span></td></tr>
+     </tbody></table>
+     <div class="pvnote">seo-writer polls with no actionable output. Idle detection recovers ~$2,400/mo.</div>`},
+
+  {id:'credits',icon:'🏷️',name:'Credits & Commitments',vis:'Mod → High',c:'var(--mod)',opp:['credits'],
+   examples:'Anthropic credits · OpenAI committed spend · cloud marketplace commits',
+   tagline:'Burn rate, forecast, and expiry risk on prepaid commitments.',
+   want:'Are we burning credits efficiently? Will credits expire? Are we over- or under-committed?',
+   tell:['Credit balance and burn rate','Forecast against commitment','Expiry risk on unused credits','Effective discount realized','Overage paid despite unused credits'],
+   data:'Billing exports, provider invoices, contract terms, credit balance, expiration schedule.',
+   limit:'Provider-specific. Some data may be manual or contract-based.',
+   lang:'For credits and commitments, we can help finance understand burn rate, waste risk, forecasted utilization, and whether the company is over- or under-committed.',
+   src:'Billing + contract terms',
+   preview:`<span class="sampletag">Sample view</span>
+     <div class="tiles">
+       <div class="tile"><div class="v">$50K</div><div class="l">Commitment</div></div>
+       <div class="tile"><div class="v" style="color:var(--amber)">$8,600</div><div class="l">On pace to expire</div></div>
+       <div class="tile"><div class="v" style="color:var(--red)">48d</div><div class="l">To expiry</div></div>
+     </div>
+     <svg viewBox="0 0 300 110" style="width:100%;height:auto;display:block">
+       <line x1="0" y1="96" x2="300" y2="96" stroke="#e6e6ee" stroke-width="1"/>
+       <polyline points="0,96 300,14" fill="none" stroke="#b9b9cc" stroke-width="1.5" stroke-dasharray="4 4"/>
+       <polygon points="0,96 60,82 120,70 180,60 240,53 300,46 300,96" fill="rgba(37,99,235,.08)"/>
+       <polyline points="0,96 60,82 120,70 180,60 240,53 300,46" fill="none" stroke="var(--mod)" stroke-width="2.5"/>
+     </svg>
+     <div style="display:flex;gap:16px;margin-top:6px;font-size:11px;color:var(--muted)">
+       <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:14px;height:0;border-top:2px dashed #b9b9cc;display:inline-block"></span>Pace to consume commit</span>
+       <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:14px;height:0;border-top:2px solid var(--mod);display:inline-block"></span>Actual burn</span>
+     </div>
+     <div class="pvnote">Actual burn trails the pace needed to consume the commit. $8,600 is recoverable by redirect or renegotiation.</div>`},
+
+  {id:'compliance',icon:'🛡️',name:'Compliance / Activity',vis:'Advanced · Gated',c:'var(--adv)',opp:[],
+   examples:'Anthropic Compliance API · enterprise audit logs · chat / file activity',
+   tagline:'Activity metadata, where permission and access allow.',
+   want:'What did users actually do? Which chats, files, projects, or actions occurred?',
+   tell:['User actions and authentication events','Administrative and platform events','Chat, file, and project activity','Activity metadata to enrich spend'],
+   data:'Enterprise compliance API access, scoped keys, legal / security approval.',
+   limit:'Sensitive, permissioned data. Not primarily a finance feature, and usually gated to enterprise or compliance plans.',
+   lang:'For customers with compliance access, we may enrich spend analysis with activity metadata. This requires explicit permission and is handled as a security integration, not a standard finance export.',
+   src:'Compliance / activity API',
+   preview:`<span class="sampletag">Sample view</span>
+     <div class="lockwrap">
+       <div class="lockblur">
+         <div class="feed">
+           <div class="feedrow"><span class="tm">09:14</span><span class="ev"><b>user.login</b> j.walsh</span><span class="pill n">auth</span></div>
+           <div class="feedrow"><span class="tm">09:22</span><span class="ev"><b>project.create</b> "Q3 model eval"</span><span class="pill n">project</span></div>
+           <div class="feedrow"><span class="tm">09:40</span><span class="ev"><b>file.export</b> k.patel</span><span class="pill n">file</span></div>
+           <div class="feedrow"><span class="tm">10:05</span><span class="ev"><b>admin.role.grant</b> s.lee</span><span class="pill n">admin</span></div>
+           <div class="feedrow"><span class="tm">10:31</span><span class="ev"><b>chat.create</b> r.martinez</span><span class="pill n">chat</span></div>
+         </div>
+       </div>
+       <div class="lockover"><span class="lk">🔒</span><span>Gated &mdash; requires security / legal approval</span></div>
+     </div>
+     <div class="pvnote lock">Powerful, but permissioned. We treat this as a security integration, not a default finance export.</div>`}
+];
+
+// data/access pill types, pills, and limitation lists
+const TYPES = {
+  financial:{label:'Financial',c:'#185fa5',bg:'#e6f1fb',bd:'#b5d4f4'},
+  admin:{label:'Admin access',c:'#3c3489',bg:'#eeedfe',bd:'#cecbf6'},
+  api:{label:'API / usage',c:'#0f6e56',bg:'#e1f5ee',bd:'#9fe1cb'},
+  mapping:{label:'Mapping',c:'#444441',bg:'#f1efe8',bd:'#d3d1c7'},
+  logs:{label:'Logs / telemetry',c:'#993c1d',bg:'#faece7',bd:'#f5c4b3'},
+  gated:{label:'Gated access',c:'#854f0b',bg:'#faeeda',bd:'#fac775'}
+};
+const DPILLS = {
+  individual:[['Expense data','financial'],['Corporate card data','financial'],['SaaS / vendor spend','financial'],['Employee mapping','mapping']],
+  team:[['Admin analytics export','admin'],['Billing export','financial'],['Seat roster','admin'],['User / team mapping','mapping']],
+  enterprise:[['Enterprise admin analytics','admin'],['Seat roster','admin'],['Billing export','financial'],['Usage reports','api'],['User / team mapping','mapping']],
+  api:[['Usage / cost API','api'],['API key list','api'],['Workspace list','admin'],['Team / project mapping','mapping']],
+  devtools:[['Claude Code analytics','api'],['User / team mapping','mapping']],
+  agents:[['Agent registry','logs'],['Orchestration logs','logs'],['Provider usage','api'],['Run metadata','logs'],['Owner / team mapping','mapping']],
+  credits:[['Billing exports','financial'],['Provider invoices','financial'],['Contract terms','gated'],['Credit balance','financial'],['Expiration schedule','financial']],
+  compliance:[['Compliance API access','gated'],['Scoped keys','gated'],['Legal / security approval','gated']]
+};
+const LIMS = {
+  individual:['Usually no admin or usage data','Visibility is mostly financial','Needs the employee to connect or export their own account'],
+  team:['No Enterprise-grade audit logs','No compliance APIs or retention controls','No chat or task-level visibility'],
+  enterprise:['Included seat usage may not map cleanly to dollar cost','Task or content visibility needs compliance / activity APIs'],
+  api:['Attribution quality depends on API key hygiene','One shared company-wide key creates ambiguity'],
+  devtools:['Productivity signals are directional, not definitive ROI','Needs context from your engineering workflow'],
+  agents:['Strong visibility only if the agent layer is instrumented','Best when the agent layer is owned by you or Brixo'],
+  credits:['Provider-specific data formats','Some data may be manual or contract-based'],
+  compliance:['Sensitive, permissioned data','Not primarily a finance feature','Usually gated to enterprise / compliance plans']
+};
+
+// audit module mapping for preview phase
+const MODS = {
+  individual:[{ic:'💳',sec:'Section 3',title:'Seat & License Spend',metric:'47 zero-usage seats',desc:'$6,100/mo reclaimable from seats that never logged in, plus 52 users on overlapping assistants.',anchor:'s3'}],
+  team:[{ic:'👥',sec:'Section 3',title:'Seat & License Spend',metric:'228 seats · 6 depts',desc:'$13,200/mo from inactive seats, duplicate tools, and over-tiered licenses.',anchor:'s3'},
+        {ic:'🎯',sec:'Section 6',title:'Spend Alignment',metric:'Utilization by team',desc:'See which teams actually use what they pay for, and where adoption concentrates.',anchor:'s6'}],
+  enterprise:[{ic:'🏢',sec:'Section 3',title:'Seat & License Spend',metric:'31 over-tiered seats',desc:'$2,800/mo from Enterprise seats with light, read-only usage a lower tier covers.',anchor:'s3'},
+              {ic:'📊',sec:'Section 5',title:'Activity Attribution',metric:'72% mapped to work',desc:'Spend traced to specific tickets, projects, and repositories where activity data exists.',anchor:'s5'}],
+  api:[{ic:'🔑',sec:'Section 1',title:'Spend Overview',metric:'$96,800 metered (45%)',desc:'Daily spend by channel and vendor across all metered usage.',anchor:'s1'},
+       {ic:'⚙️',sec:'Section 4',title:'Usage & Agent Optimization',metric:'$4,800/mo model routing',desc:'Route boilerplate to cost-efficient models; reserve premium models for complex reasoning.',anchor:'s4'}],
+  devtools:[{ic:'⌨️',sec:'Section 2',title:'Engineering Usage',metric:'$42,800 top team',desc:'Spend and tracked delivery per engineer and team, with coaching priorities.',anchor:'s2'},
+            {ic:'⚙️',sec:'Section 4',title:'Usage & Agent Optimization',metric:'$6,200/mo session continuity',desc:'Cut avoidable context re-reads with continuity and workflow guidelines.',anchor:'s4'}],
+  agents:[{ic:'🤖',sec:'Section 4',title:'Usage & Agent Optimization',metric:'$2,400/mo idle agents',desc:'Shut down polling loops with no actionable output and validate automated runs.',anchor:'s4'}],
+  credits:[{ic:'💰',sec:'Section 1',title:'Spend Overview',metric:'6% prepaid credits',desc:'Burn rate and forecast across committed and prepaid spend.',anchor:'s1'},
+           {ic:'🏷️',sec:'Section 3',title:'Credits at Risk',metric:'$8,600 expiring',desc:'Committed credits on pace to expire unused this term, recoverable by redirect or renegotiation.',anchor:'s3'}],
+  compliance:[{ic:'🛡️',sec:'Section 5',title:'Activity Attribution',metric:'User & activity metadata',desc:'Map spend to actions, projects, and files where compliance access and permissions allow.',anchor:'s5'}]
+};
+
+let selected = [];      // ordered list of ids
+let walkIndex = 0;
+let collapsed = false;  // overview collapsed state, persists across steps
+
+const byId = id => CHANNELS.find(c=>c.id===id);
+const fmt = n => '$'+n.toLocaleString();
+
+/* ---------- SELECT ---------- */
+function renderGrid(){
+  document.getElementById('grid').innerHTML = CHANNELS.map(ch=>`
+    <div class="opt" style="--c:${ch.c}" data-id="${ch.id}" onclick="toggle('${ch.id}')">
+      <div class="check"><svg viewBox="0 0 12 12"><path d="M1 6l3 3 7-7" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="ic">${ch.icon}</div>
+      <div class="nm">${ch.name}</div>
+    </div>`).join('');
+}
+function toggle(id){
+  const i = selected.indexOf(id);
+  if(i>=0) selected.splice(i,1); else selected.push(id);
+  document.querySelector(`.opt[data-id="${id}"]`).classList.toggle('on', selected.includes(id));
+  updateSelectUI();
+}
+function selectAll(){ selected = CHANNELS.map(c=>c.id); document.querySelectorAll('.opt').forEach(o=>o.classList.add('on')); updateSelectUI(); }
+function clearAll(){ selected = []; document.querySelectorAll('.opt').forEach(o=>o.classList.remove('on')); updateSelectUI(); }
+function updateSelectUI(){
+  document.getElementById('cnum').textContent = selected.length;
+  const btn = document.getElementById('continueBtn');
+  const note = document.getElementById('continueNote');
+  btn.disabled = selected.length===0;
+  note.textContent = selected.length===0 ? 'Select at least one channel to continue.'
+    : `We'll walk through ${selected.length} channel${selected.length>1?'s':''}, then preview your audit.`;
+}
+
+/* ---------- PHASE SWITCH ---------- */
+function setPhase(p){
+  document.getElementById('phase-select').classList.toggle('hide', p!=='select');
+  document.getElementById('phase-walk').classList.toggle('hide', p!=='walk');
+  document.getElementById('phase-preview').classList.toggle('hide', p!=='preview');
+  document.querySelectorAll('#flowsteps .s').forEach(s=>{
+    const k=s.dataset.fs; s.classList.remove('active','done');
+    const order={select:0,walk:1,preview:2};
+    if(k===p) s.classList.add('active');
+    else if(order[k]<order[p]) s.classList.add('done');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function backToSelect(){ setPhase('select'); }
+
+/* ---------- WALK ---------- */
+function startWalk(){ if(selected.length===0) return; walkIndex=0; setPhase('walk'); renderWalk(); }
+function toggleOverview(){
+  collapsed = !collapsed;
+  document.getElementById('w-ov').classList.toggle('collapsed', collapsed);
+}
+function renderWalk(){
+  const ch = byId(selected[walkIndex]);
+  document.getElementById('w-ic').textContent = ch.icon;
+  document.getElementById('w-nm').textContent = ch.name;
+  const vb = document.getElementById('w-vbadge'); vb.textContent = ch.vis+' visibility'; vb.style.setProperty('--c',ch.c);
+  document.getElementById('w-stepn').textContent = `Channel ${walkIndex+1} of ${selected.length}`;
+  document.getElementById('w-tagline').textContent = ch.tagline;
+
+  document.getElementById('w-ov').style.setProperty('--c',ch.c);
+  document.getElementById('w-pv').style.setProperty('--c',ch.c);
+  document.getElementById('w-ov').classList.toggle('collapsed', collapsed);
+
+  const pills = DPILLS[ch.id] || [];
+  const typesUsed = [...new Set(pills.map(p=>p[1]))];
+  const pillHtml = pills.map(([label,t])=>{const T=TYPES[t];return `<span class="pill-d" style="color:${T.c};background:${T.bg};border-color:${T.bd}">${label}</span>`;}).join('');
+  const legendHtml = typesUsed.map(t=>{const T=TYPES[t];return `<span><span class="dot" style="background:${T.bd}"></span>${T.label}</span>`;}).join('');
+  const lims = LIMS[ch.id] || [];
+  document.getElementById('w-ovbody').innerHTML = `
+    <div class="ovbox want"><div class="lbl">You want to know</div><div class="qtext">${ch.want}</div></div>
+    <div class="ovbox tell"><div class="lbl">What we can tell you</div><ul class="tlist checks">${ch.tell.map(t=>`<li>${t}</li>`).join('')}</ul></div>
+    <div class="ovbox data"><div class="lbl">Data / access needed</div><div class="pills">${pillHtml}</div><div class="legend">${legendHtml}</div></div>
+    <div class="ovbox limit"><div class="lbl">Limitation</div><ul class="tlist flags">${lims.map(l=>`<li>${l}</li>`).join('')}</ul></div>
+    <div class="quote">"${ch.lang}"</div>`;
+
+  document.getElementById('w-src').innerHTML = ch.src;
+  document.getElementById('w-pvbody').innerHTML = ch.preview;
+
+  // nav
+  document.getElementById('w-back').textContent = walkIndex===0 ? '← Selection' : '← Back';
+  const next = document.getElementById('w-next');
+  next.textContent = walkIndex===selected.length-1 ? 'See your audit preview →' : 'Next →';
+  document.getElementById('w-dots').innerHTML = selected.map((id,i)=>
+    `<span class="pd ${i===walkIndex?'on':(i<walkIndex?'seen':'')}" onclick="jumpStep(${i})"></span>`).join('');
+}
+function nextStep(){ if(walkIndex<selected.length-1){ walkIndex++; renderWalk(); window.scrollTo({top:0,behavior:'smooth'}); } else { goPreview(); } }
+function prevStep(){ if(walkIndex>0){ walkIndex--; renderWalk(); window.scrollTo({top:0,behavior:'smooth'}); } else { backToSelect(); } }
+function jumpStep(i){ walkIndex=i; renderWalk(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+/* ---------- PREVIEW ---------- */
+function goPreview(){ setPhase('preview'); renderPreview(); }
+function renderPreview(){
+  const chosen = selected.map(byId);
+  const tags = new Set(); chosen.forEach(c=>c.opp.forEach(t=>tags.add(t)));
+  let monthly=0, oneTime=0;
+  tags.forEach(t=>{ if(t==='credits') oneTime+=OPP[t]; else monthly+=OPP[t]; });
+
+  const seen=new Set(); const mods=[];
+  chosen.forEach(c=>(MODS[c.id]||[]).forEach(m=>{ const k=m.anchor+m.title; if(!seen.has(k)){ seen.add(k); mods.push({...m,chname:c.name,c:c.c}); } }));
+
+  const cards=[];
+  if(monthly>0) cards.push(`<div class="opp"><div class="v" style="color:var(--green)">${fmt(monthly)}<span style="font-size:13px;color:var(--faint)">/mo</span></div><div class="l">Candidate monthly savings</div></div>`);
+  if(oneTime>0) cards.push(`<div class="opp"><div class="v" style="color:var(--cyan)">${fmt(oneTime)}</div><div class="l">Prepaid credits at risk</div></div>`);
+  cards.push(`<div class="opp"><div class="v">${mods.length}</div><div class="l">Audit modules activated</div></div>`);
+  if(monthly>0) cards.push(`<div class="opp"><div class="v" style="color:var(--accent)">${fmt(monthly*12)}</div><div class="l">Annualized opportunity</div></div>`);
+
+  const names = chosen.map(c=>c.name).join(', ');
+  document.getElementById('preview-body').innerHTML = `
+    <div class="previewhead">
+      <h2>Your audit would cover ${chosen.length} spend channel${chosen.length>1?'s':''}</h2>
+      <p>Based on the channels you selected (${names}), here are the audit modules that <b>would</b> activate for you. The numbers below are illustrative, drawn from a sample 90-day engagement, to show what your results <b>could</b> look like once we run the audit on your own data.</p>
+      <div class="opp-row">${cards.join('')}</div>
+    </div>
+    <div class="preview-note">
+      <span class="pi">ℹ</span>
+      <span>These are <b>preview outputs</b>: each card stands in for a module the full audit would include. The figures are sample data to illustrate the kind of finding, not your numbers yet. Each <b>Section</b> tag maps to where that module appears in the full audit report (hover to confirm).</span>
+    </div>
+    <div class="mods">
+      ${mods.map(m=>`
+        <div class="mod" style="--c:${m.c}">
+          <div class="top"><span class="ic">${m.ic}</span><span class="chname">${m.chname}</span><span class="secref" title="${m.sec} of the full AI Spend Audit report — '${m.title}'. Opens in context when you launch the audit.">${m.sec}<span class="iq">ℹ</span></span></div>
+          <div class="metric">${m.metric}</div>
+          <div class="mtitle">${m.title}</div>
+          <div class="mdesc">${m.desc}</div>
+          <a class="mlink" href="${AUDIT}#${m.anchor}" target="_blank" rel="noopener">Open ${m.sec} in the audit →</a>
+        </div>`).join('')}
+    </div>
+    <div class="cta">
+      <h3>See the full audit assembled around your channels</h3>
+      <p>The complete report walks through every activated module with charts, per-user breakdowns, prioritized recommendations, and the data needed to sharpen attribution.</p>
+      <a class="btn primary" href="${AUDIT}" target="_blank" rel="noopener" style="font-size:14px">Open your full sample audit →</a>
+      <div class="sub">Then talk to Brixo to run it on your real invoices, seat rosters, and logs.</div>
+    </div>`;
+}
+
+renderGrid();
+updateSelectUI();
+</script>
+</body>
+</html>
