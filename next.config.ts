@@ -24,6 +24,14 @@ const nextConfig: NextConfig = {
         source: "/auditpreview/",
         destination: "/auditpreview/index.html",
       },
+      {
+        source: "/onboarding",
+        destination: "/onboarding/index.html",
+      },
+      {
+        source: "/onboarding/",
+        destination: "/onboarding/index.html",
+      },
     ];
   },
 };
